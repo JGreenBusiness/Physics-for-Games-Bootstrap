@@ -11,7 +11,8 @@ Circle::~Circle()
 {
 }
 
-void Circle::Draw()
+void Circle::Draw(float _alpha)
 {
 	aie::Gizmos::add2DCircle(m_position, m_radius, 10, m_colour);
 }
+

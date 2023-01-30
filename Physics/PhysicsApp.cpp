@@ -6,6 +6,7 @@
 #include "Gizmos.h"
 #include <glm/ext.hpp>
 #include "Demos.h"
+#include "Circle.h"
 
 PhysicsApp::PhysicsApp() {
 
@@ -28,6 +29,8 @@ bool PhysicsApp::startup()
 
 	m_physicsScene = new PhysicsScene();
 	m_physicsScene->SetTimeStep(0.01);
+
+
 
 	DemoStartup(1);
 
@@ -81,6 +84,9 @@ void PhysicsApp::DemoStartup(int _num)
 {
 #ifdef NewtonsFirstLaw
 	m_physicsScene->SetGravity(glm::vec2(0));
+
+	Circle* ball = new Circle(glm::vec2(-40, 0), glm::vec2(10, 30), 3.0f, 1, glm::vec4(1, 0, 0, 1));
+	m_physicsScene->AddActor(ball);
 #endif // NewtonsFirstLaw
 
 }

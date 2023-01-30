@@ -8,8 +8,6 @@ public:
 
 	~Circle();
 
-	virtual void Draw();
-
 	//Getter
 	float GetRadius() { return m_radius; }
 	glm::vec4 GetColour() { return m_colour; }
@@ -18,6 +16,10 @@ public:
 protected:
 	float m_radius;
 	glm::vec4 m_colour;
+
+
+	// Inherited via Rigidbody
+	virtual void Draw(float _alpha) override;
 
 };
 

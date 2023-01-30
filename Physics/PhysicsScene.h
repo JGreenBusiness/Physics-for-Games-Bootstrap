@@ -17,6 +17,8 @@ public:
 	void Update(float _dt);
 	void Draw();
 
+	static bool Circle2Circle(PhysicsObject*, PhysicsObject*);
+
 	// Getters
 	glm::vec2 GetGravity() { return m_gravity; }
 	float GetTimeStep() { return m_timeStep; }
