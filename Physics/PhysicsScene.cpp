@@ -81,8 +81,13 @@ bool PhysicsScene::Circle2Circle(PhysicsObject* _obj1, PhysicsObject* _obj2)
 	if (sphere1 != nullptr && sphere2 != nullptr)
 	{
 		// If distance of two spheres is less then sum of both sphere radius
-		return glm::distance(sphere1->GetPosition(), sphere2->GetPosition()) <=
-			(sphere1->GetRadius() + sphere2->GetRadius());
+		if (glm::distance(sphere1->GetPosition(), sphere2->GetPosition()) <=
+			(sphere1->GetRadius() + sphere2->GetRadius()))
+		{
+			sphere1->ResetVelocity();
+			sphere2->ResetVelocity();
+			return true;
+		}
 	}
 }
 

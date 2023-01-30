@@ -5,8 +5,10 @@
 
 //#define NewtonsFirstLaw
 //#define NewtonsSecondLaw
-#define NewtonsThirdLaw
+//#define NewtonsThirdLaw
 
 
+
+#define SimulateCollision
 
 #define SimulateRocket
