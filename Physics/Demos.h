@@ -3,8 +3,9 @@
 
 
 
-#define NewtonsFirstLaw = 1
-#define NewtonsSecondLaw = 2
+//#define NewtonsFirstLaw
+//#define NewtonsSecondLaw
+#define NewtonsThirdLaw
 
 
 
