@@ -3,7 +3,7 @@
 
 enum ShapeType {
 	PLANE = 0,
-	Circle,
+	CIRCLE,
 	BOX
 };
 

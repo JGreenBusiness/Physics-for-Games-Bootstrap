@@ -6,7 +6,7 @@ class Rigidbody : public PhysicsObject
 {
 public:
 	Rigidbody(ShapeType _shapeID, glm::vec2 _position,
-		glm::vec2 _velocity, float _orientation, float _mass, glm::vec4 _colour);
+		glm::vec2 _velocity, float _orientation, float _mass);
 	~Rigidbody();
 
 	virtual void FixedUpdate(glm::vec2 _gravity, float _timeStep);
@@ -23,7 +23,6 @@ protected:
 	glm::vec2 m_velocity;
 	float m_mass;
 	float m_orientation;
-	glm::vec4 m_colour;
 
 	
 
