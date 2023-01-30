@@ -3,7 +3,8 @@
 
 
 
-#define NewtonsFirstLaw
+#define NewtonsFirstLaw = 1
+#define NewtonsSecondLaw = 2
 
 
 
