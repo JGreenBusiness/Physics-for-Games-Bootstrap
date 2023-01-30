@@ -59,7 +59,7 @@ void PhysicsScene::Update(float _dt)
 
 			// for now we can assume both shapes are Circles, 
 			// since that is all we’ve implemented for now.
-			Circle2Circle(object1, object2);
+			//Circle2Circle(object1, object2);
 		}
 	}
 }

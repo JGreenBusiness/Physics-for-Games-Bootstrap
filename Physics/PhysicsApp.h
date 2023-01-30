@@ -4,6 +4,7 @@
 #include "Renderer2D.h"
 #include "Input.h"
 #include <vector>
+#include "Circle.h"
 
 class PhysicsScene;
 class PhysicsObject;
@@ -34,4 +35,7 @@ public:
 	void DemoStartup(int _num);
 	void DemoUpdate(aie::Input* _input, float _dt);
 	float DegreeToRadian(float _degree);
+
+private:
+	Circle* m_rocket;
 };

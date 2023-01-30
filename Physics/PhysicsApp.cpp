@@ -6,7 +6,6 @@
 #include "Gizmos.h"
 #include <glm/ext.hpp>
 #include "Demos.h"
-#include "Circle.h"
 
 PhysicsApp::PhysicsApp() {
 
@@ -117,12 +116,33 @@ void PhysicsApp::DemoStartup(int _num)
 	m_physicsScene->AddActor(ball2);
 
 #endif // SimulateCollision
+	
+#ifdef SimulateRocket
+	m_physicsScene->SetGravity(glm::vec2(0, 0));
+
+	m_rocket = new Circle(glm::vec2(0,-50), glm::vec2(0), 6.0f, 15, glm::vec4(1, 0, 0, 1));
+	m_physicsScene->AddActor(m_rocket);
+
+#endif // SimulateRocket
 
 
 }
 
 void PhysicsApp::DemoUpdate(aie::Input* _input, float _dt)
 {
+#ifdef SimulateRocket
+
+	if (m_rocket->GetMass() >= 0)
+	{
+		float fuelUse = 1.0f;
+		m_rocket->SetMass(m_rocket->GetMass() - (fuelUse * _dt));
+
+		Circle* fuelParticle = new Circle(m_rocket->GetPosition() + glm::vec2(0, -5), glm::vec2(0), fuelUse, 1, glm::vec4(0, 1, 0, 1));
+		m_physicsScene->AddActor(fuelParticle);
+		m_rocket->ApplyForce(fuelParticle, glm::vec2(0, 10));
+	}
+
+#endif // SimulateRocket
 }
 
 float PhysicsApp::DegreeToRadian(float _degree)
