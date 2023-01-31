@@ -100,7 +100,7 @@ void PhysicsApp::DemoStartup(int _num)
 	
 	Circle* ball = new Circle(glm::vec2(-40, 0), glm::vec2(10, 30), 3.0f, 1, glm::vec4(1, 0, 0, 1));
 	m_physicsScene->AddActor(ball);
-	ball2->ApplyForce(glm::vec2(30.0f, 3.0f));
+	ball->ApplyForce(glm::vec2(30.0f, 3.0f));
 #endif // NewtonsSecondLaw
 
 #ifdef NewtonsThirdLaw
@@ -114,15 +114,15 @@ void PhysicsApp::DemoStartup(int _num)
 	ball->ApplyForce(ball2, glm::vec2(10, 0));
 #endif // NewtonsThirdLaw
 	
-#ifdef SimulateCollision
-	m_physicsScene->SetGravity(glm::vec2(0, 0));
+#ifdef SimulateC2CCollision
+	m_physicsScene->SetGravity(glm::vec2(0, -10));
 
-	Circle* ball = new Circle(glm::vec2(-20,0), glm::vec2(10, 0), 4.0f, 4, glm::vec4(1, 0, 0, 1));
-	Circle* ball2 = new Circle(glm::vec2(10,0), glm::vec2(-10, 0), 4.0f, 4, glm::vec4(0, 1, 0, 1));
+	Circle* ball = new Circle(glm::vec2(-20,0), glm::vec2(10, 15), 4.0f, 4, glm::vec4(1, 0, 0, 1));
+	Circle* ball2 = new Circle(glm::vec2(10,0), glm::vec2(-10, 15), 4.0f, 4, glm::vec4(0, 1, 0, 1));
 	m_physicsScene->AddActor(ball);
 	m_physicsScene->AddActor(ball2);
 
-#endif // SimulateCollision
+#endif // SimulateC2CCollision
 	
 #ifdef SimulateRocket
 	m_physicsScene->SetGravity(glm::vec2(0, 0));
@@ -143,7 +143,6 @@ void PhysicsApp::DemoStartup(int _num)
 	m_physicsScene->AddActor(ball1);
 	m_physicsScene->AddActor(ball2);
 	m_physicsScene->AddActor(plane);
-
 
 #endif // CircleToPlane
 

@@ -104,8 +104,7 @@ bool PhysicsScene::Circle2Circle(PhysicsObject* _obj1, PhysicsObject* _obj2)
 		if (glm::distance(sphere1->GetPosition(), sphere2->GetPosition()) <=
 			(sphere1->GetRadius() + sphere2->GetRadius()))
 		{
-			sphere1->ResetVelocity();
-			sphere2->ResetVelocity();
+			sphere1->ResolveCollision(sphere2);
 			
 			return true;
 		}

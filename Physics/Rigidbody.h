@@ -16,7 +16,8 @@ public:
 	void ResolveCollision(Rigidbody* _otherActor);
 
 	void ResetVelocity() { m_velocity = glm::vec2(0); }
-
+	
+	float GetKeneticEnergy();
 	glm::vec2 GetPosition() { return m_position; }
 	float GetOritentation() { return m_orientation; }
 	glm::vec2 GetVelocity() { return m_velocity; }

@@ -1,5 +1,5 @@
 #include "Rigidbody.h"
-
+#include <iostream>
 Rigidbody::Rigidbody(ShapeType _shapeID, glm::vec2 _position, glm::vec2 _velocity, float _orientation, float _mass) :
 	PhysicsObject(_shapeID)
 {
@@ -49,9 +49,27 @@ void Rigidbody::ResolveCollision(Rigidbody* _otherActor)
 	float elasticity = 1.0f;
 
 	// j is the impulse magnitude
-	float j = glm::dot((1.0f + elasticity) * (relativeVelocity), normal / ((1 / GetMass()) + (1 / _otherActor->GetMass())));
+	float j = glm::dot(-(1.0f + elasticity) * (relativeVelocity),
+		normal / ((1 / GetMass()) + (1 / _otherActor->GetMass())));
 
 	glm::vec2 force = normal * j;
 
+	float kePre = GetKeneticEnergy() + _otherActor->GetKeneticEnergy();
+
 	ApplyForce(_otherActor, -force);
+
+	float kePost = GetKeneticEnergy() + _otherActor->GetKeneticEnergy();
+
+	float deltaKE = kePost - kePre;
+
+	// Checking if any kenetic energy was lost
+	if (deltaKE > kePost * 0.01f)
+	{
+		std::cout << "Kinetic energy discrepancy greater than 1% detected!" << std::endl;
+	}
+}
+
+float Rigidbody::GetKeneticEnergy()
+{
+	return .5f * (m_mass * glm::pow(glm::length(m_velocity), 2));
 }
