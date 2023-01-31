@@ -2,6 +2,7 @@
 
 #include "PhysicsObject.h"
 #include "Circle.h"
+#include "Plane.h"
 #include "Demos.h"
 
 
@@ -37,9 +38,8 @@ typedef bool(*fn)(PhysicsObject*, PhysicsObject*);
 
 static fn collisionFunctionArrray[] =
 {
-	PhysicsScene::Plane2Circle,		PhysicsScene::Plane2Plane,  PhysicsScene::Plane2Box,
-	PhysicsScene::Circle2Circle,	PhysicsScene::Circle2Plane, PhysicsScene::Plane2Box,
-	PhysicsScene::Box2Circle,		PhysicsScene::Box2Plane,	PhysicsScene::Box2Box,
+	PhysicsScene::Plane2Plane, PhysicsScene::Plane2Circle,
+	PhysicsScene::Circle2Plane, PhysicsScene::Circle2Circle,
 };
 
 void PhysicsScene::Update(float _dt)
@@ -76,17 +76,10 @@ void PhysicsScene::Update(float _dt)
 			if (collisionFunctionPtr != nullptr)
 			{
 				// did a collision occur?
-				collisionFunctionPtr(object1, object2);
-			}
-
-
-			
 #ifndef SimulateRocket
-			// for now we can assume both shapes are Circles, 
-			// since that is all we’ve implemented for now.
-			Circle2Circle(object1, object2);
+				collisionFunctionPtr(object1, object2);
 #endif // !SimulateRocket
-
+			}
 		}
 	}
 }
@@ -119,10 +112,38 @@ bool PhysicsScene::Circle2Circle(PhysicsObject* _obj1, PhysicsObject* _obj2)
 	}
 }
 
-bool PhysicsScene::Plane2Circle(PhysicsObject* obj1, PhysicsObject* obj2)
+bool PhysicsScene::Circle2Plane(PhysicsObject* _obj1, PhysicsObject* _obj2)
+{
+	Circle* circle = dynamic_cast<Circle*>(_obj1);
+	Plane* plane = dynamic_cast<Plane*>(_obj2);
+	//if successful then test for collision
+	if (circle != nullptr && plane != nullptr)
+	{
+		glm::vec2 collisionNormal = plane->GetNormal();
+		float sphereToPlane = glm::dot(circle->GetPosition(), plane->GetNormal()) - plane->GetDistance();
+
+		float intersection = circle->GetRadius() - sphereToPlane;
+		float velocityOutOfPlane = glm::dot(circle->GetVelocity(), plane->GetNormal());
+		if (intersection > 0 && velocityOutOfPlane < 0)
+		{
+			//set Circle velocity to zero here
+			circle->ResetVelocity();
+			return true;
+		}
+	}
+	return false;
+}
+bool PhysicsScene::Plane2Circle(PhysicsObject* _obj1, PhysicsObject* _obj2)
 {
 	// reverse the order of arguments, as obj1 is the plane and obj2 is the Circle
-	return Circle2Plane(obj2, obj1);
+	return Circle2Plane(_obj2, _obj1);
 }
+
+bool PhysicsScene::Plane2Plane(PhysicsObject* _obj1, PhysicsObject* _obj2)
+{
+	return false;
+}
+
+
 
 

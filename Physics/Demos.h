@@ -10,3 +10,5 @@
 //#define SimulateCollision
 
 //#define SimulateRocket
+
+#define CircleToPlaneCollision
