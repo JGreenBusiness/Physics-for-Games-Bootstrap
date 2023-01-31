@@ -38,4 +38,6 @@ public:
 
 private:
 	Circle* m_rocket;
+	float m_fuelRate = 0;
+	float m_MAX_FUEL_RATE = 0.1f;
 };

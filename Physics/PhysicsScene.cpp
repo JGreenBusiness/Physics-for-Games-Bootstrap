@@ -2,6 +2,8 @@
 
 #include "PhysicsObject.h"
 #include "Circle.h"
+#include "Demos.h"
+
 
 PhysicsScene::PhysicsScene()
 {
@@ -31,6 +33,15 @@ void PhysicsScene::RemoveActor(PhysicsObject* _actor)
 	m_actors.erase(std::find(m_actors.begin(), m_actors.end(), _actor));
 }
 
+typedef bool(*fn)(PhysicsObject*, PhysicsObject*);
+
+static fn collisionFunctionArrray[] =
+{
+	PhysicsScene::Plane2Circle,		PhysicsScene::Plane2Plane,  PhysicsScene::Plane2Box,
+	PhysicsScene::Circle2Circle,	PhysicsScene::Circle2Plane, PhysicsScene::Plane2Box,
+	PhysicsScene::Box2Circle,		PhysicsScene::Box2Plane,	PhysicsScene::Box2Box,
+};
+
 void PhysicsScene::Update(float _dt)
 {
 	static float accumulatedTime = 0.0f;
@@ -56,10 +67,26 @@ void PhysicsScene::Update(float _dt)
 		{
 			PhysicsObject* object1 = m_actors[outer];
 			PhysicsObject* object2 = m_actors[inner];
+			int shapeId1 = object1->GetShapeID();
+			int shapeId2 = object2->GetShapeID();
 
+			// using function pointer 
+			int functionIdx = (shapeId1 * SHAPE_COUNT) + shapeId2;
+			fn collisionFunctionPtr = collisionFunctionArrray[functionIdx];
+			if (collisionFunctionPtr != nullptr)
+			{
+				// did a collision occur?
+				collisionFunctionPtr(object1, object2);
+			}
+
+
+			
+#ifndef SimulateRocket
 			// for now we can assume both shapes are Circles, 
 			// since that is all we’ve implemented for now.
-			//Circle2Circle(object1, object2);
+			Circle2Circle(object1, object2);
+#endif // !SimulateRocket
+
 		}
 	}
 }
@@ -86,9 +113,16 @@ bool PhysicsScene::Circle2Circle(PhysicsObject* _obj1, PhysicsObject* _obj2)
 		{
 			sphere1->ResetVelocity();
 			sphere2->ResetVelocity();
+			
 			return true;
 		}
 	}
+}
+
+bool PhysicsScene::Plane2Circle(PhysicsObject* obj1, PhysicsObject* obj2)
+{
+	// reverse the order of arguments, as obj1 is the plane and obj2 is the Circle
+	return Circle2Plane(obj2, obj1);
 }
 
 

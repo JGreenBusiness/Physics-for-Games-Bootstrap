@@ -2,10 +2,13 @@
 #include <glm/vec2.hpp>
 
 enum ShapeType {
+
 	PLANE = 0,
 	CIRCLE,
-	BOX
+	//BOX
+	SHAPE_COUNT
 };
+
 
 class PhysicsObject
 {
@@ -22,10 +25,10 @@ public:
 	ShapeType GetShapeID() { return m_shapeID; }
 
 
+
 protected:
 
 	ShapeType m_shapeID;
-
 
 
 };

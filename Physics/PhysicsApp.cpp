@@ -6,6 +6,7 @@
 #include "Gizmos.h"
 #include <glm/ext.hpp>
 #include "Demos.h"
+#include "glm/vec3.hpp"
 
 PhysicsApp::PhysicsApp() {
 
@@ -30,6 +31,11 @@ bool PhysicsApp::startup()
 	m_physicsScene->SetTimeStep(0.01);
 
 
+
+	glm::vec3 spherePos = glm::vec3(10, 5, 8);
+	glm::vec3 planeNormal = glm::vec3(0.707, 0, 707);
+
+	
 
 	DemoStartup(1);
 
@@ -120,7 +126,7 @@ void PhysicsApp::DemoStartup(int _num)
 #ifdef SimulateRocket
 	m_physicsScene->SetGravity(glm::vec2(0, 0));
 
-	m_rocket = new Circle(glm::vec2(0,-50), glm::vec2(0), 80.0f, 15, glm::vec4(1, 0, 0, 1));
+	m_rocket = new Circle(glm::vec2(0,-30), glm::vec2(0), 40.0f, 15, glm::vec4(1, 0, 0, 1));
 	m_physicsScene->AddActor(m_rocket);
 
 #endif // SimulateRocket
@@ -130,19 +136,30 @@ void PhysicsApp::DemoStartup(int _num)
 
 void PhysicsApp::DemoUpdate(aie::Input* _input, float _dt)
 {
+
+
 #ifdef SimulateRocket
 
 	if (m_rocket->GetMass() >= 0)
 	{
-		float fuelUse = 40.0f;
-		// Rocket mass is being reduced by fuelUse each timeStep
-		m_rocket->SetMass(m_rocket->GetMass() - (fuelUse * _dt));
+		float fuelUse = 1.f;
+		m_fuelRate -= _dt;
 
-		Circle* fuelParticle = new Circle(m_rocket->GetPosition() + glm::vec2(0, -m_rocket->GetRadius()), glm::vec2(0), fuelUse, 1, glm::vec4(0, 1, 0, 1));
-		m_physicsScene->AddActor(fuelParticle);
-		m_rocket->ApplyForce(fuelParticle, glm::vec2(0, 50));
+		if (m_fuelRate <= 0)
+		{
+			m_rocket->SetMass(m_rocket->GetMass() - fuelUse);
+
+			Circle* fuelParticle = new Circle(m_rocket->GetPosition() + glm::vec2(0, -m_rocket->GetRadius()),
+				glm::vec2(0), fuelUse, 1, glm::vec4(0, 1, 0, 1));
+
+			m_physicsScene->AddActor(fuelParticle);
+			m_rocket->ApplyForce(fuelParticle, glm::vec2(0, 30));
+
+			m_fuelRate = m_MAX_FUEL_RATE;
+		}
+
 	}
-
+	
 
 #endif // SimulateRocket
 }
