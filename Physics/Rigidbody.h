@@ -13,13 +13,16 @@ public:
 	void ApplyForce(glm::vec2 force);
 	void ApplyForce(Rigidbody* _otherActor, glm::vec2 _force);
 
+	void ResolveCollision(Rigidbody* _otherActor);
+
+	void ResetVelocity() { m_velocity = glm::vec2(0); }
+
 	glm::vec2 GetPosition() { return m_position; }
 	float GetOritentation() { return m_orientation; }
 	glm::vec2 GetVelocity() { return m_velocity; }
 	float GetMass() { return m_mass; }
 	void SetMass(float _mass) { m_mass = _mass; }
 
-	void ResetVelocity() { m_velocity = glm::vec2(0); }
 
 protected:
 	glm::vec2 m_position;

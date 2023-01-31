@@ -32,3 +32,26 @@ void Rigidbody::ApplyForce(Rigidbody* _otherActor, glm::vec2 _force)
 	ApplyForce(_force);
 	_otherActor->ApplyForce(-_force);
 }
+
+void Rigidbody::ResolveCollision(Rigidbody* _otherActor)
+{
+	// Collision normal being the normalized difference in position is sufficient for now
+	glm::vec2 normal = glm::normalize(_otherActor->GetPosition() - m_position);
+
+	glm::vec2 relativeVelocity = _otherActor->GetVelocity() - m_velocity;
+
+	if (glm::dot(normal,relativeVelocity) >= 0)
+	{
+		return;
+	}
+
+	// using an e coefficient of 1 means no energy will be lost
+	float elasticity = 1.0f;
+
+	// j is the impulse magnitude
+	float j = glm::dot((1.0f + elasticity) * (relativeVelocity), normal / ((1 / GetMass()) + (1 / _otherActor->GetMass())));
+
+	glm::vec2 force = normal * j;
+
+	ApplyForce(_otherActor, -force);
+}
