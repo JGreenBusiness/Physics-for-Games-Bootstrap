@@ -71,5 +71,5 @@ void Rigidbody::ResolveCollision(Rigidbody* _otherActor)
 
 float Rigidbody::GetKeneticEnergy()
 {
-	return .5f * (m_mass * glm::pow(glm::length(m_velocity), 2));
+	return .5f * ((glm::dot(m_velocity, m_velocity) * m_mass));
 }
