@@ -15,8 +15,8 @@ Rigidbody::~Rigidbody()
 
 void Rigidbody::FixedUpdate(glm::vec2 _gravity, float _timeStep)
 {
-	ApplyForce(_gravity * m_mass * _timeStep);
 	m_position += m_velocity * _timeStep;
+	ApplyForce(_gravity * m_mass * _timeStep);
 }
 
 void Rigidbody::ApplyForce(glm::vec2 _force)

@@ -37,7 +37,7 @@ public:
 	void SetGravity(const glm::vec2 _gravity) { m_gravity = _gravity;}
 	void SetTimeStep(const float _timeStep) { m_timeStep = _timeStep; }
 
-private:
+protected:
 	glm::vec2 m_gravity;
 	float m_timeStep;
 	std::vector<PhysicsObject*> m_actors;
