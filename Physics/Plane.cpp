@@ -1,10 +1,12 @@
 #include "Plane.h"
 #include "Gizmos.h"
+#include <iostream>
 
 Plane::Plane() : PhysicsObject(PLANE)
 {
 	m_distanceToOrigin = 0;
 	m_normal = glm::vec2(0, 1);
+	m_colour = glm::vec4(1, 1, 1, 1);
 }
 Plane::Plane(glm::vec2 _normal, float _distance, glm::vec4 _colour) : 
 	PhysicsObject(PLANE)
@@ -16,6 +18,7 @@ Plane::Plane(glm::vec2 _normal, float _distance, glm::vec4 _colour) :
 
 Plane::~Plane()
 {
+
 }
 
 void Plane::FixedUpdate(glm::vec2 _gravity, float _timeStep)
@@ -39,4 +42,39 @@ void Plane::Draw(float _alpha)
 
 
 
+}
+
+void Plane::ResolveCollision(Rigidbody* _otherActor)
+{
+	if (glm::dot(m_normal, _otherActor->GetVelocity()) >= 0)
+	{
+		return;
+	}
+
+	// using an e coefficient of 1 means no energy will be lost
+	float elasticity = 1.0f;
+
+	// j is the impulse magnitude
+	float j = (-(1 + elasticity) * (glm::length(_otherActor->GetVelocity()) * glm::length(m_normal)) / (1 / _otherActor->GetMass()));
+
+	glm::vec2 force = m_normal * j;
+
+	float kePre = GetKeneticEnergy() + _otherActor->GetKeneticEnergy();
+
+	_otherActor->ApplyForce(- force);
+
+	float kePost = GetKeneticEnergy() + _otherActor->GetKeneticEnergy();
+
+	float deltaKE = kePost - kePre;
+
+	// Checking if any kenetic energy was lost
+	if (deltaKE > kePost * 0.01f)
+	{
+		//std::cout << "Kinetic energy discrepancy greater than 1% detected!" << std::endl;
+	}
+}
+
+float Plane::GetKeneticEnergy()
+{
+	return 0;
 }

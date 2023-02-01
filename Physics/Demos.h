@@ -7,8 +7,8 @@
 //#define NewtonsSecondLaw
 //#define NewtonsThirdLaw
 
-#define SimulateC2CCollision
+//#define SimulateC2CCollision
 
 //#define SimulateRocket
 
-//#define CircleToPlaneCollision
+#define CircleToPlaneCollision

@@ -125,8 +125,7 @@ bool PhysicsScene::Circle2Plane(PhysicsObject* _obj1, PhysicsObject* _obj2)
 		float velocityOutOfPlane = glm::dot(circle->GetVelocity(), plane->GetNormal());
 		if (intersection > 0 && velocityOutOfPlane < 0)
 		{
-			//set Circle velocity to zero here
-			circle->ResetVelocity();
+			plane->ResolveCollision(circle);
 			return true;
 		}
 	}
