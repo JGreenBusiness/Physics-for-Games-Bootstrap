@@ -6,11 +6,10 @@
 #include "Demos.h"
 
 
+glm::vec2 PhysicsScene::m_gravity = glm::vec2(0);
 PhysicsScene::PhysicsScene()
 {
 	m_timeStep = 0.01f;
-	m_gravity = glm::vec2(0);
-
 }
 
 PhysicsScene::~PhysicsScene()
@@ -36,7 +35,7 @@ void PhysicsScene::RemoveActor(PhysicsObject* _actor)
 
 typedef bool(*fn)(PhysicsObject*, PhysicsObject*);
 
-static fn collisionFunctionArrray[] =
+static fn collisionFunctionArray[] =
 {
 	PhysicsScene::Plane2Plane, PhysicsScene::Plane2Circle,
 	PhysicsScene::Circle2Plane, PhysicsScene::Circle2Circle,
@@ -72,7 +71,7 @@ void PhysicsScene::Update(float _dt)
 
 			// using function pointer 
 			int functionIdx = (shapeId1 * SHAPE_COUNT) + shapeId2;
-			fn collisionFunctionPtr = collisionFunctionArrray[functionIdx];
+			fn collisionFunctionPtr = collisionFunctionArray[functionIdx];
 			if (collisionFunctionPtr != nullptr)
 			{
 				// did a collision occur?
@@ -109,6 +108,8 @@ bool PhysicsScene::Circle2Circle(PhysicsObject* _obj1, PhysicsObject* _obj2)
 			return true;
 		}
 	}
+
+	return false;
 }
 
 bool PhysicsScene::Circle2Plane(PhysicsObject* _obj1, PhysicsObject* _obj2)
@@ -118,7 +119,6 @@ bool PhysicsScene::Circle2Plane(PhysicsObject* _obj1, PhysicsObject* _obj2)
 	//if successful then test for collision
 	if (circle != nullptr && plane != nullptr)
 	{
-		glm::vec2 collisionNormal = plane->GetNormal();
 		float sphereToPlane = glm::dot(circle->GetPosition(), plane->GetNormal()) - plane->GetDistance();
 
 		float intersection = circle->GetRadius() - sphereToPlane;
@@ -138,9 +138,15 @@ bool PhysicsScene::Plane2Circle(PhysicsObject* _obj1, PhysicsObject* _obj2)
 	return Circle2Plane(_obj2, _obj1);
 }
 
-bool PhysicsScene::Plane2Plane(PhysicsObject* _obj1, PhysicsObject* _obj2)
+float PhysicsScene::GetTotalEnergy()
 {
-	return false;
+	float total = 0;
+	for (auto it = m_actors.begin(); it != m_actors.end(); it++)
+	{
+		PhysicsObject* obj = *it;
+		total += obj->GetEnergy();
+	}
+	return total;
 }
 
 

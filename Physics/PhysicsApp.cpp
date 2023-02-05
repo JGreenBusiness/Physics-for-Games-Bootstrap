@@ -1,4 +1,7 @@
 #include "PhysicsApp.h"
+
+#include <ostream>
+
 #include "Texture.h"
 #include "Font.h"
 #include "Input.h"
@@ -8,6 +11,7 @@
 #include "Demos.h"
 #include "glm/vec3.hpp"
 #include "Plane.h"
+#include <iostream>
 
 PhysicsApp::PhysicsApp() {
 
@@ -154,15 +158,71 @@ void PhysicsApp::DemoStartup(int _num)
 
 #endif // CircleToPlane
 
+#ifdef NewtonsCradle
+	m_physicsScene->SetGravity(glm::vec2(0, 0));
+
+	Circle* ball1 = new Circle(glm::vec2(-12, 0), glm::vec2(0,0), 1.0f, 4, glm::vec4(1, 0, 0, 1));
+	Circle* ball2 = new Circle(glm::vec2(-4, 0), glm::vec2(0,0), 1.0f, 4, glm::vec4(0, 1, 0, 1));
+	Circle* ball3 = new Circle(glm::vec2(4, 0), glm::vec2(0,0), 1.0f, 4, glm::vec4(0, 0, 1, 1));
+	Circle* ball4 = new Circle(glm::vec2(12, 0), glm::vec2(-8,0), 1.0f, 4, glm::vec4(1, 1, 0, 1));
+
+	Plane* plane1 = new Plane(glm::vec2(1, 0), -20, glm::vec4(1, 1, 1, 1));
+	Plane* plane2 = new Plane(glm::vec2(-1, 0), -20, glm::vec4(1, 1, 1, 1));
+
+	m_physicsScene->AddActor(ball1);
+	m_physicsScene->AddActor(ball2);
+	m_physicsScene->AddActor(ball3);
+	m_physicsScene->AddActor(ball4);
+	m_physicsScene->AddActor(plane1);
+	m_physicsScene->AddActor(plane2);
+
+#endif // NewtonsCradle
+
+#ifdef AsymmetricalNewtonsCradle
+	m_physicsScene->SetGravity(glm::vec2(0, 0));
+
+	Circle* ball1 = new Circle(glm::vec2(-12, 0), glm::vec2(0,0), 1.0f, 4, glm::vec4(1, 0, 0, 1));
+	Circle* ball2 = new Circle(glm::vec2(-4, 0), glm::vec2(0,0), 1.0f, 4, glm::vec4(0, 1, 0, 1));
+	Circle* ball3 = new Circle(glm::vec2(4, 0), glm::vec2(0,0), 3.0f, 4, glm::vec4(0, 0, 1, 1));
+	Circle* ball4 = new Circle(glm::vec2(12, 0), glm::vec2(-8,0), 1.0f, 4, glm::vec4(1, 1, 0, 1));
+
+	Plane* plane1 = new Plane(glm::vec2(1, 0), -20, glm::vec4(1, 1, 1, 1));
+	Plane* plane2 = new Plane(glm::vec2(-1, 0), -20, glm::vec4(1, 1, 1, 1));
+
+	m_physicsScene->AddActor(ball1);
+	m_physicsScene->AddActor(ball2);
+	m_physicsScene->AddActor(ball3);
+	m_physicsScene->AddActor(ball4);
+	m_physicsScene->AddActor(plane1);
+	m_physicsScene->AddActor(plane2);
+
+#endif // AsymmetricalNewtonsCradle
+
+#ifdef KPEDiagnostic
+	m_physicsScene->SetGravity(glm::vec2(0, -9.8));
+
+	m_ball1 = new Circle(glm::vec2(-12, 0), glm::vec2(0), 4.0f, 4, glm::vec4(1, 0, 0, 1));
+	Circle* ball2 = new Circle(glm::vec2(8, 0), glm::vec2(0,0), 1.0f, 4, glm::vec4(0, 1, 0, 1));
+
+	Plane* plane1 = new Plane(glm::vec2(0, 1), -20, glm::vec4(1, 1, 1, 1));
+
+	Plane* plane2 = new Plane(glm::vec2(-1, 0), -40, glm::vec4(1, 1, 1, 1));
+	Plane* plane3 = new Plane(glm::vec2(1, 0), -40, glm::vec4(1, 1, 1, 1));
+	
+	m_physicsScene->AddActor(m_ball1);
+	m_physicsScene->AddActor(ball2);
+	m_physicsScene->AddActor(plane1);
+	m_physicsScene->AddActor(plane2);
+	m_physicsScene->AddActor(plane3);
+
+#endif // KPEDiagnostic
+
 
 }
 
 void PhysicsApp::DemoUpdate(aie::Input* _input, float _dt)
 {
-
-
 #ifdef SimulateRocket
-
 	if (m_rocket->GetMass() >= 0)
 	{
 		float fuelUse = 1.f;
@@ -179,12 +239,21 @@ void PhysicsApp::DemoUpdate(aie::Input* _input, float _dt)
 			m_rocket->ApplyForce(fuelParticle, glm::vec2(0, 30));
 
 			m_fuelRate = m_MAX_FUEL_RATE;
-		}
-
 	}
-	
-
 #endif // SimulateRocket
+
+#ifdef KPEDiagnostic
+
+	if((int)m_physicsScene->GetTotalEnergy() != m_energyLast)
+	{
+		
+		std::cout << m_physicsScene->GetTotalEnergy()<<  std::endl;
+		m_energyLast = (int)m_physicsScene->GetTotalEnergy();
+	}
+
+#endif // KPEDiagnostic
+
+		
 }
 
 float PhysicsApp::DegreeToRadian(float _degree)

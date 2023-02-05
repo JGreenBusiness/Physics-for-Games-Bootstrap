@@ -59,11 +59,11 @@ void Plane::ResolveCollision(Rigidbody* _otherActor)
 
 	glm::vec2 force = m_normal * j;
 
-	float kePre = GetKeneticEnergy() + _otherActor->GetKeneticEnergy();
+	float kePre = GetKineticEnergy() + _otherActor->GetKineticEnergy();
 
-	_otherActor->ApplyForce(- force);
+	_otherActor->ApplyForce(-force);
 
-	float kePost = GetKeneticEnergy() + _otherActor->GetKeneticEnergy();
+	float kePost = GetKineticEnergy() + _otherActor->GetKineticEnergy();
 
 	float deltaKE = kePost - kePre;
 
@@ -74,7 +74,12 @@ void Plane::ResolveCollision(Rigidbody* _otherActor)
 	}
 }
 
-float Plane::GetKeneticEnergy()
+float Plane::GetKineticEnergy()
+{
+	return 0;
+}
+
+float Plane::GetEnergy()
 {
 	return 0;
 }

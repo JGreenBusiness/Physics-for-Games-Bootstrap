@@ -54,11 +54,11 @@ void Rigidbody::ResolveCollision(Rigidbody* _otherActor)
 
 	glm::vec2 force = normal * j;
 
-	float kePre = GetKeneticEnergy() + _otherActor->GetKeneticEnergy();
+	float kePre = GetKineticEnergy() + _otherActor->GetKineticEnergy();
 
 	ApplyForce(_otherActor, -force);
 
-	float kePost = GetKeneticEnergy() + _otherActor->GetKeneticEnergy();
+	float kePost = GetKineticEnergy() + _otherActor->GetKineticEnergy();
 
 	float deltaKE = kePost - kePre;
 
@@ -69,7 +69,17 @@ void Rigidbody::ResolveCollision(Rigidbody* _otherActor)
 	}
 }
 
-float Rigidbody::GetKeneticEnergy()
+float Rigidbody::GetKineticEnergy()
 {
 	return .5f * ((glm::dot(m_velocity, m_velocity) * m_mass));
+}
+
+float Rigidbody::GetEnergy()
+{
+	return GetPotentialEnergy() + GetKineticEnergy();
+}
+
+float Rigidbody::GetPotentialEnergy()
+{
+	return -GetMass() * glm::dot(PhysicsScene::GetGravity(), GetPosition());
 }

@@ -11,4 +11,7 @@
 
 //#define SimulateRocket
 
-#define CircleToPlaneCollision
+//#define CircleToPlaneCollision
+//#define NewtonsCradle
+//#define AsymmetricalNewtonsCradle
+#define KPEDiagnostic

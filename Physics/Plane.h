@@ -11,15 +11,16 @@ public:
 	~Plane();
 
 	// Inherited via PhysicsObject
-	virtual void FixedUpdate(glm::vec2 _gravity, float _timeStep) ;
-	virtual void Draw(float _alpha) ;
+	void FixedUpdate(glm::vec2 _gravity, float _timeStep) override;
+	void Draw(float _alpha) override;
 
 	glm::vec2 GetNormal() { return m_normal; };
 	float GetDistance() {return m_distanceToOrigin;}
 
 	void ResolveCollision(Rigidbody* _otherActor);
 
-	float GetKeneticEnergy();
+	float GetKineticEnergy() override;
+	float GetEnergy() override;
 
 
 protected:

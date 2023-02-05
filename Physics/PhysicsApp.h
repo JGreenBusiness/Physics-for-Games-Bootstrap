@@ -37,7 +37,12 @@ public:
 	float DegreeToRadian(float _degree);
 
 private:
+
 	Circle* m_rocket;
 	float m_fuelRate = 0;
 	float m_MAX_FUEL_RATE = 0.1f;
+
+	Circle* m_ball1;
+	int m_energyLast = 0;
+	
 };
