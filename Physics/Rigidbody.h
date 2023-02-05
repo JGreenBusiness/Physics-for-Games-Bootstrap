@@ -35,13 +35,12 @@ protected:
 	glm::vec2 m_velocity;
 	float m_mass;
 	float m_orientation;
+	float m_angularVelocity;
+	float m_moment;
+
+	float m_lastOrientation;
 
 	
-
-	// Getters
-	
-
-	// Setters
 private:
 
 
