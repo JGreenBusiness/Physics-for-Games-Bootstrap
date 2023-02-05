@@ -17,7 +17,8 @@ public:
 	glm::vec2 GetNormal() { return m_normal; };
 	float GetDistance() {return m_distanceToOrigin;}
 
-	void ResolveCollision(Rigidbody* _otherActor);
+	void ResolveCollision(Rigidbody* _otherActor, glm::vec2 _contact);
+
 
 	float GetKineticEnergy() override;
 	float GetEnergy() override;

@@ -16,7 +16,7 @@ Rigidbody::~Rigidbody()
 void Rigidbody::FixedUpdate(glm::vec2 _gravity, float _timeStep)
 {
 	m_position += m_velocity * _timeStep;
-	ApplyForce(_gravity * m_mass * _timeStep);
+	ApplyForce(_gravity * m_mass * _timeStep,glm::vec2(0) );
 
 	m_orientation = m_angularVelocity * _timeStep;
 }
@@ -36,7 +36,7 @@ void Rigidbody::ApplyForce(Rigidbody* _otherActor, glm::vec2 _force, glm::vec2 _
 	_otherActor->ApplyForce(-_force, _pos);
 }
 
-void Rigidbody::ResolveCollision(Rigidbody* _otherActor, glm::vec2 _contact, glm::vec2* _collisionNormal = nullptr)
+void Rigidbody::ResolveCollision(Rigidbody* _otherActor, glm::vec2 _contact, glm::vec2* _collisionNormal)
 {
 	// find the vector between their centres, or use the provided direction
 	// of force, and make sure it's normalised
@@ -77,6 +77,7 @@ void Rigidbody::ResolveCollision(Rigidbody* _otherActor, glm::vec2 _contact, glm
 
 
 
+	// << Old code for basic collision detection 06/02/23 >>
 	//// Collision normal being the normalized difference in position is sufficient for now
 	//glm::vec2 normal = glm::normalize(_otherActor->GetPosition() - m_position);
 

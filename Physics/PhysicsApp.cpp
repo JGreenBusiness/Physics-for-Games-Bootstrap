@@ -202,7 +202,7 @@ void PhysicsApp::DemoStartup(int _num)
 	m_physicsScene->SetGravity(glm::vec2(0, -9.8));
 
 	m_ball1 = new Circle(glm::vec2(-12, 0), glm::vec2(0), 4.0f, 4, glm::vec4(1, 0, 0, 1));
-	Circle* ball2 = new Circle(glm::vec2(8, 0), glm::vec2(0,0), 1.0f, 4, glm::vec4(0, 1, 0, 1));
+	Circle* ball2 = new Circle(glm::vec2(8, 0), glm::vec2(-6,0), 1.0f, 4, glm::vec4(0, 1, 0, 1));
 
 	Plane* plane1 = new Plane(glm::vec2(0, 1), -20, glm::vec4(1, 1, 1, 1));
 

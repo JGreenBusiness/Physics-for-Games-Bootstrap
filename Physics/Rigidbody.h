@@ -12,10 +12,10 @@ public:
 	 ~Rigidbody();
 
 	void FixedUpdate(glm::vec2 _gravity, float _timeStep) override;
-	void ApplyForce(glm::vec2 force);
-	void ApplyForce(Rigidbody* _otherActor, glm::vec2 _force);
+	void ApplyForce(glm::vec2 force, glm::vec2 _pos);
+	void ApplyForce(Rigidbody* _otherActor, glm::vec2 _force, glm::vec2 _pos);
 
-	void ResolveCollision(Rigidbody* _otherActor);
+	void ResolveCollision(Rigidbody* _otherActor, glm::vec2 _contact, glm::vec2* _collisionNormal = nullptr);
 
 	void ResetVelocity() { m_velocity = glm::vec2(0); }
 
@@ -26,6 +26,8 @@ public:
 	float GetOrientation() { return m_orientation; }
 	glm::vec2 GetVelocity() { return m_velocity; }
 	float GetMass() { return m_mass; }
+	float GetMoment() {return m_moment;}
+	
 	void SetMass(float _mass) { m_mass = _mass; }
 	
 	float GetEnergy() override;

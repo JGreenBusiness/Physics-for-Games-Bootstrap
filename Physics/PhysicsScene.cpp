@@ -94,17 +94,18 @@ void PhysicsScene::Draw()
 
 bool PhysicsScene::Circle2Circle(PhysicsObject* _obj1, PhysicsObject* _obj2)
 {
-	Circle* sphere1 = dynamic_cast<Circle*>(_obj1);
-	Circle* sphere2 = dynamic_cast<Circle*>(_obj2);
+	Circle* circle1 = dynamic_cast<Circle*>(_obj1);
+	Circle* circle2 = dynamic_cast<Circle*>(_obj2);
 
-	if (sphere1 != nullptr && sphere2 != nullptr)
+	
+	if (circle1 != nullptr && circle2 != nullptr)
 	{
 		// If distance of two spheres is less then sum of both sphere radius
-		if (glm::distance(sphere1->GetPosition(), sphere2->GetPosition()) <=
-			(sphere1->GetRadius() + sphere2->GetRadius()))
+		if (glm::distance(circle1->GetPosition(), circle2->GetPosition()) <=
+			(circle1->GetRadius() + circle2->GetRadius()))
 		{
-			sphere1->ResolveCollision(sphere2);
-			
+
+			circle1->ResolveCollision(circle2, circle1->GetPosition() + circle2->GetPosition());
 			return true;
 		}
 	}
@@ -125,8 +126,8 @@ bool PhysicsScene::Circle2Plane(PhysicsObject* _obj1, PhysicsObject* _obj2)
 		float velocityOutOfPlane = glm::dot(circle->GetVelocity(), plane->GetNormal());
 		if (intersection > 0 && velocityOutOfPlane < 0)
 		{
-			//circle->ResetVelocity();
-			plane->ResolveCollision(circle);
+			glm::vec2 contact = circle->GetPosition() + (plane->GetNormal() * -circle->GetRadius());
+			plane->ResolveCollision(circle,contact);
 			return true;
 		}
 	}

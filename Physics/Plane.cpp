@@ -44,34 +44,17 @@ void Plane::Draw(float _alpha)
 
 }
 
-void Plane::ResolveCollision(Rigidbody* _otherActor)
+void Plane::ResolveCollision(Rigidbody* _otherActor, glm::vec2 _contact)
 {
-	if (glm::dot(m_normal, _otherActor->GetVelocity()) >= 0)
-	{
-		return;
-	}
+	// the plane isn't moving, so the relative velocity is just actor2's velocity
+	glm::vec2 vRel = _otherActor->GetVelocity();
 
-	// using an e coefficient of 1 means no energy will be lost
-	float elasticity = 1.0f;
-
-	// j is the impulse magnitude
-	float j = (-(1 + elasticity) * (glm::length(_otherActor->GetVelocity()) * glm::length(m_normal)) / (1 / _otherActor->GetMass()));
+	float e = 1;
+	float j = glm::dot(-(1 + e) * (vRel), m_normal) / (1 / _otherActor->GetMass());
 
 	glm::vec2 force = m_normal * j;
 
-	float kePre = GetKineticEnergy() + _otherActor->GetKineticEnergy();
-
-	_otherActor->ApplyForce(-force);
-
-	float kePost = GetKineticEnergy() + _otherActor->GetKineticEnergy();
-
-	float deltaKE = kePost - kePre;
-
-	// Checking if any kenetic energy was lost
-	if (deltaKE > kePost * 0.01f)
-	{
-		//std::cout << "Kinetic energy discrepancy greater than 1% detected!" << std::endl;
-	}
+	_otherActor->ApplyForce(force, _contact - _otherActor->GetPosition());
 }
 
 float Plane::GetKineticEnergy()
