@@ -24,7 +24,7 @@ public:
 	float GetPotentialEnergy();
 	float GetKineticEnergy() override;
 	float GetEnergy() override;
-	glm::vec2 GetPosition() { return m_position; }
+	glm::vec2 GetPosition() const{ return m_position; }
 	float GetOrientation() { return m_orientation; }
 	glm::vec2 GetVelocity() { return m_velocity; }
 	float GetMass() { return m_mass; }

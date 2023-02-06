@@ -11,6 +11,7 @@
 #include "Demos.h"
 #include "glm/vec3.hpp"
 #include "Plane.h"
+#include "Box.h"
 #include <iostream>
 
 PhysicsApp::PhysicsApp() {
@@ -216,6 +217,27 @@ void PhysicsApp::DemoStartup(int _num)
 	m_physicsScene->AddActor(plane3);
 
 #endif // KPEDiagnostic
+	
+#ifdef SimulateBox
+	m_physicsScene->SetGravity(glm::vec2(0, -9.8));
+
+	Box* box1 = new Box(glm::vec2(0), glm::vec2(0),30,4, glm::vec2(4,7),glm::vec4(1,0,0,1));
+	Box* box2 = new Box(glm::vec2(15,0), glm::vec2(0),30,4, glm::vec2(7,3),glm::vec4(0,0,,1));
+	Circle* ball1 = new Circle(glm::vec2(0, 15), glm::vec2(0, 0), 1.0f, 4, glm::vec4(0, 1, 0, 1));
+
+	Plane* plane1 = new Plane(glm::vec2(0, 1), -20, glm::vec4(1, 1, 1, 1));
+
+	Plane* plane2 = new Plane(glm::vec2(-1, 0), -40, glm::vec4(1, 1, 1, 1));
+	Plane* plane3 = new Plane(glm::vec2(1, 0), -40, glm::vec4(1, 1, 1, 1));
+	
+	m_physicsScene->AddActor(box1);
+	m_physicsScene->AddActor(box2);
+	m_physicsScene->AddActor(ball1);
+	m_physicsScene->AddActor(plane1);
+	m_physicsScene->AddActor(plane2);
+	m_physicsScene->AddActor(plane3);
+
+#endif // SimulateBox
 
 
 }

@@ -14,4 +14,6 @@
 //#define CircleToPlaneCollision
 //#define NewtonsCradle
 //#define AsymmetricalNewtonsCradle
-#define KPEDiagnostic
+//#define KPEDiagnostic
+#define SimulateBox
+

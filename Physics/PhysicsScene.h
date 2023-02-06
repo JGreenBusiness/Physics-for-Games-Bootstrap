@@ -19,11 +19,18 @@ public:
 
 	static bool Circle2Circle(PhysicsObject*, PhysicsObject*);
 	static bool Circle2Plane(PhysicsObject*, PhysicsObject*);
-	//static bool Circle2Box(PhysicsObject*, PhysicsObject*);
-	static bool Plane2Box(PhysicsObject*, PhysicsObject*);
+	static bool Circle2Box(PhysicsObject*, PhysicsObject*);
 
+	static bool Plane2Box(PhysicsObject*, PhysicsObject*);
 	static bool Plane2Plane(PhysicsObject*, PhysicsObject*){return false;}
 	static bool Plane2Circle(PhysicsObject*, PhysicsObject*);
+
+	static bool Box2Plane(PhysicsObject*, PhysicsObject*);
+	static bool Box2Circle(PhysicsObject*, PhysicsObject*);
+	static bool Box2Box(PhysicsObject*, PhysicsObject*);
+
+
+
 
 
 
