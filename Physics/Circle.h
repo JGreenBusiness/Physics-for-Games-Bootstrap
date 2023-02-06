@@ -8,6 +8,8 @@ public:
 
 	~Circle();
 
+	
+
 	//Getter
 	float GetRadius() { return m_radius; }
 	glm::vec4 GetColour() { return m_colour; }
@@ -17,6 +19,8 @@ protected:
 	float m_radius;
 	glm::vec4 m_colour;
 
+
+	
 	
 
 

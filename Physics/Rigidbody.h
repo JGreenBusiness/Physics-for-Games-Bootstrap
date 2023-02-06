@@ -19,29 +19,43 @@ public:
 
 	void ResetVelocity() { m_velocity = glm::vec2(0); }
 
+	void CalculateSmoothedPosition(float _alpha);
+
 	float GetPotentialEnergy();
-	
 	float GetKineticEnergy() override;
+	float GetEnergy() override;
 	glm::vec2 GetPosition() { return m_position; }
 	float GetOrientation() { return m_orientation; }
 	glm::vec2 GetVelocity() { return m_velocity; }
 	float GetMass() { return m_mass; }
 	float GetMoment() {return m_moment;}
+	glm::vec2 GetLocalX() { return m_localX; }
+	glm::vec2 GetLocalY() { return m_localY; }
+	float GetAngularVelocity() { return m_angularVelocity; }
 	
 	void SetMass(float _mass) { m_mass = _mass; }
 	
-	float GetEnergy() override;
 
 protected:
 	glm::vec2 m_position;
+	glm::vec2 m_lastPosition;
 	glm::vec2 m_velocity;
+
 	float m_mass;
 	float m_orientation;
-	float m_angularVelocity;
+	float m_angularVelocity = 0;
 	float m_moment;
 
 	float m_lastOrientation;
 
+	glm::vec2 m_smoothedPosition;
+	glm::vec2 m_smoothedLocalX;
+	glm::vec2 m_smoothedLocalY;
+
+	glm::vec2 m_localX;
+	glm::vec2 m_localY;
+
+	void CalculateAxes();
 	
 private:
 
