@@ -15,5 +15,7 @@
 //#define NewtonsCradle
 //#define AsymmetricalNewtonsCradle
 //#define KPEDiagnostic
-#define SimulateBox
+
+//#define SimulateBox
+//#define Bounce2Stop
 

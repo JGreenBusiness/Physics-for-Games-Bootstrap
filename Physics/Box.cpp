@@ -10,6 +10,8 @@ Box::Box(glm::vec2 _position, glm::vec2 _velocity,float _orientation, float _mas
 	m_colour = _colour;
 
 	m_moment = 1.0f / 12.0f * m_mass * GetWidth() * GetWidth();
+
+	SetElastcity(.5f);
 }
 
 Box::~Box()

@@ -4,6 +4,9 @@
 
 #include "PhysicsScene.h"
 
+#define MIN_LINEAR_THRESHOLD 0.01f
+#define MIN_ANGULAR_THRESHOLD 0.01f
+
 class Rigidbody : public PhysicsObject
 {
 public:
@@ -54,6 +57,10 @@ protected:
 
 	glm::vec2 m_localX;
 	glm::vec2 m_localY;
+
+	float m_linearDrag =.3f;
+	float m_angularDrag = .3f;
+
 
 	void CalculateAxes();
 	

@@ -20,10 +20,24 @@ void Rigidbody::FixedUpdate(glm::vec2 _gravity, float _timeStep)
 	m_lastPosition = m_position;
 	m_lastOrientation = m_orientation;
 
+	m_velocity -= m_velocity * m_linearDrag * _timeStep;
+	m_angularVelocity -= m_angularVelocity * m_angularDrag * _timeStep;
+
 	m_position += m_velocity * _timeStep;
 	ApplyForce(_gravity * m_mass * _timeStep,glm::vec2(0) );
 
 	m_orientation += m_angularVelocity * _timeStep;
+
+	
+
+	if (length(m_velocity) < MIN_LINEAR_THRESHOLD)
+	{
+		m_velocity = glm::vec2(0, 0);
+	}
+	if (abs(m_angularVelocity) < MIN_ANGULAR_THRESHOLD)
+	{
+		m_angularVelocity = 0;
+	}
 
 }
 
@@ -46,6 +60,7 @@ void Rigidbody::ResolveCollision(Rigidbody* _otherActor, glm::vec2 _contact, glm
 	glm::vec2 normal = glm::normalize(_collisionNormal ? *_collisionNormal :
 		_otherActor->m_position - m_position);
 	// get the vector perpendicular to the collision normal
+	glm::vec2 relativeVelocity = _otherActor->GetVelocity() - m_velocity;
 	glm::vec2 perp(normal.y, -normal.x);
 
 	// determine the total velocity of the contact points for the two objects, 
@@ -66,51 +81,20 @@ void Rigidbody::ResolveCollision(Rigidbody* _otherActor, glm::vec2 _contact, glm
 		float mass1 = 1.0f / (1.0f / m_mass + (r1 * r1) / m_moment);
 		float mass2 = 1.0f / (1.0f / _otherActor->m_mass + (r2 * r2) / _otherActor->m_moment);
 
-		float elasticity = 1;
+		float elasticity = (GetElasticity() + _otherActor->GetElasticity()) / 2.0f;
 
-		glm::vec2 force = (1.0f + elasticity) * mass1 * mass2 /
-			(mass1 + mass2) * (v1 - v2) * normal;
+		float j = glm::dot(-(1 + elasticity) * (relativeVelocity), normal) /
+			glm::dot(normal, normal * ((1 / m_mass) + (1 / _otherActor->GetMass())));
+
+		glm::vec2 force = normal * j;
 
 		//apply equal and opposite forces
-		ApplyForce(-force, _contact - m_position);
+		ApplyForce(_otherActor, -force, _contact);
 		_otherActor->ApplyForce(force, _contact - _otherActor->m_position);
 	}
 
 
 
-	// << Old code for basic collision detection 06/02/23 >>
-	//// Collision normal being the normalized difference in position is sufficient for now
-	//glm::vec2 normal = glm::normalize(_otherActor->GetPosition() - m_position);
-
-	//glm::vec2 relativeVelocity = _otherActor->GetVelocity() - m_velocity;
-
-	//if (glm::dot(normal,relativeVelocity) >= 0)
-	//{
-	//	return;
-	//}
-
-	//// using an e coefficient of 1 means no energy will be lost
-	//float elasticity = 1.0f;
-
-	//// j is the impulse magnitude
-	//float j = glm::dot(-(1.0f + elasticity) * (relativeVelocity),
-	//	normal / ((1 / GetMass()) + (1 / _otherActor->GetMass())));
-
-	//glm::vec2 force = normal * j;
-
-	//float kePre = GetKineticEnergy() + _otherActor->GetKineticEnergy();
-
-	//ApplyForce(_otherActor, -force);
-
-	//float kePost = GetKineticEnergy() + _otherActor->GetKineticEnergy();
-
-	//float deltaKE = kePost - kePre;
-
-	//// Checking if any kenetic energy was lost
-	//if (deltaKE > kePost * 0.01f)
-	//{
-	//	std::cout << "Kinetic energy discrepancy greater than 1% detected!" << std::endl;
-	//}
 }
 
 float Rigidbody::GetKineticEnergy()

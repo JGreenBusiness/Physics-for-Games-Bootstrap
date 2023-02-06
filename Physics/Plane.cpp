@@ -54,7 +54,7 @@ void Plane::ResolveCollision(Rigidbody* _otherActor, glm::vec2 _contact)
 	float velocityIntoPlane = glm::dot(vRel, m_normal);
 
 	// perfectly elasticity collisions for now
-	float e = 1;
+	float e = (GetElasticity() + _otherActor->GetElasticity()) / 2.0f;
 
 	// this is the perpendicular distance we apply the force at relative to the COM, so Torque = F*r
 	float r = glm::dot(localContact, glm::vec2(m_normal.y, -m_normal.x));
