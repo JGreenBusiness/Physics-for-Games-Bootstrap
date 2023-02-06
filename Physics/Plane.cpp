@@ -14,6 +14,8 @@ Plane::Plane(glm::vec2 _normal, float _distance, glm::vec4 _colour) :
 	m_normal = _normal;
 	m_distanceToOrigin = _distance;
 	m_colour = _colour;
+
+	SetElastcity(.3f);
 }
 
 Plane::~Plane()

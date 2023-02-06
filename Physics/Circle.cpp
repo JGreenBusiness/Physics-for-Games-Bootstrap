@@ -7,6 +7,7 @@ Circle::Circle(glm::vec2 _position, glm::vec2 _velocity, float _mass, float _rad
 	m_colour = _colour;
 	m_moment = .5f * m_mass * m_radius * m_radius;
 
+	SetElastcity(.8f);
 }
 
 Circle::~Circle()
