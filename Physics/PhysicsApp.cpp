@@ -325,29 +325,46 @@ void PhysicsApp::DemoStartup(int _num)
 
 	m_physicsScene->SetGravity(glm::vec2(0,-9.8));
 	Plane* botPlane = new Plane(glm::vec2(0, 1), -50.0f, glm::vec4(1, 1, 1, 1));
-	Box* box1 = new Box(glm::vec2(0, 30), glm::vec2(0), 1.5708,4, glm::vec2(4,7),glm::vec4(1,0,0,1));
+	Box* box1 = new Box(glm::vec2(0, 30), glm::vec2(0,0), 1.9708f,4, glm::vec2(4,7),glm::vec4(1,0,0,1));
+	Circle* ball1 = new Circle(glm::vec2(0, 15), glm::vec2(3, 0), 1.0f, 4, glm::vec4(0, 1, 0, 1));
+	Circle* ball2 = new Circle(glm::vec2(15, 30), glm::vec2(3, 0), 1.0f, 4, glm::vec4(0, 1, 0, 1));
+	Circle* ball3 = new Circle(glm::vec2(-15, 30), glm::vec2(3, 0), 1.0f, 4, glm::vec4(0, 1, 0, 1));
 
 	const int RACK_SIZE = 20;
 	Circle* balls[RACK_SIZE];
-	int dist = 10;
-	glm::vec2 startPos = glm::vec2(-50, 0);
-	for (int i = 0; i < RACK_SIZE; i++)
+	int dist = 8;
+	glm::vec2 startPos = glm::vec2(-80, 0);
+
+	for(int j = 0; j < 3; j++)
 	{
-		if (i % 2 ==0)
+		for (int i = 0; i < RACK_SIZE; i++)
 		{
-			balls[i] = new Circle(glm::vec2(startPos.y + (i * dist), 0), glm::vec2(0), 1, 1, glm::vec4(1, 1, 1, 1));
+			if (i % 2 ==0)
+			{
+				balls[i] = new Circle(glm::vec2(startPos.x + (i * dist), startPos.y - (j*dist*2) ), glm::vec2(0), 1, 1, glm::vec4(1, 1, 1, 1));
+			}
+			else
+			{
+				balls[i] = new Circle(glm::vec2(startPos.x + (i * dist), -dist - (j*dist*2)), glm::vec2(0), 1, 1, glm::vec4(1, 1, 1, 1));
+			}
+			balls[i]->SetKinematic(true);
+			balls[i]->SetElastcity(.4f);
+			m_physicsScene->AddActor(balls[i]);
+			
+			
 		}
-		else
-		{
-			balls[i] = new Circle(glm::vec2(startPos.y + (i * dist), -dist), glm::vec2(0), 1, 1, glm::vec4(1, 1, 1, 1));
-		}
-		balls[i]->SetKinematic(true);
-		m_physicsScene->AddActor(balls[i]);
 	}
+	
 
 
 	m_physicsScene->AddActor(botPlane);
+
+	box1->SetElastcity(.4f);
 	m_physicsScene->AddActor(box1);
+	m_physicsScene->AddActor(ball1);
+	m_physicsScene->AddActor(ball2);
+	m_physicsScene->AddActor(ball3);
+	
 
 #endif // PhysicsBuckets
 

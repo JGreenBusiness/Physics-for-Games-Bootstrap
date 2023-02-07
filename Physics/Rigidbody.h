@@ -34,7 +34,7 @@ public:
 	glm::vec2 GetLocalX() { return m_localX; }
 	glm::vec2 GetLocalY() { return m_localY; }
 	float GetAngularVelocity() { return m_angularVelocity; }
-	bool IsKinematic(bool _state) { return m_isKinematic; }
+	bool IsKinematic() { return m_isKinematic; }
 	
 	void SetMass(float _mass) { m_mass = _mass; }
 	void SetPosition(glm::vec2 _pos) { m_position = _pos; }
