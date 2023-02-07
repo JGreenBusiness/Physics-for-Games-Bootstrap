@@ -6,9 +6,10 @@ enum ShapeType {
 	PLANE = 0,
 	CIRCLE,
 	BOX,
-	SHAPE_COUNT
 };
 
+
+const int SHAPE_COUNT = 3;
 
 class PhysicsObject
 {

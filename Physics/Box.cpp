@@ -9,7 +9,7 @@ Box::Box(glm::vec2 _position, glm::vec2 _velocity,float _orientation, float _mas
 	m_extents = _extents;
 	m_colour = _colour;
 
-	m_moment = 1.0f / 12.0f * m_mass * GetWidth() * GetWidth();
+	m_moment = 1.0f / 12.0f * GetMass() * GetWidth() * GetHeight();
 
 	SetElastcity(.5f);
 }
@@ -19,22 +19,22 @@ Box::~Box()
 }
 
 // check if any of the other box's corners are inside this box
-bool Box::CheckBoxCorners(const Box& _box, glm::vec2& _contact, int& _numContacts, float &_pen, glm::vec2& _edgeNormal)
+bool Box::CheckBoxCorners(const Box& box, glm::vec2& contact, int& numContacts, float& pen, glm::vec2& edgeNormal)
 {
 	float minX, maxX, minY, maxY;
-	float boxW = _box.GetExtents().x * 2;
-	float boxH = _box.GetExtents().y * 2;
+	float boxW = box.GetExtents().x * 2;
+	float boxH = box.GetExtents().y * 2;
 	int numLocalContacts = 0;
 	glm::vec2 localContact(0, 0);
 	bool first = true;
 
 	// loop over all corners of the other box
-	for (float x = -_box.GetExtents().x; x < boxW; x += boxW)
+	for (float x = -box.GetExtents().x; x < boxW; x += boxW)
 	{
-		for (float y = -_box.GetExtents().y; y < boxH; y += boxH)
+		for (float y = -box.GetExtents().y; y < boxH; y += boxH)
 		{
 			// Get the position in worldspace
-			glm::vec2 p = _box.GetPosition() + x * _box.m_localX + y * _box.m_localY;
+			glm::vec2 p = box.GetPosition() + x * box.m_localX + y * box.m_localY;
 			// Get the position in our box's space
 			glm::vec2 p0(glm::dot(p - m_position, m_localX),
 				glm::dot(p - m_position, m_localY));
@@ -62,37 +62,37 @@ bool Box::CheckBoxCorners(const Box& _box, glm::vec2& _contact, int& _numContact
 	if (maxX <= -m_extents.x || minX >= m_extents.x ||
 		maxY <= -m_extents.y || minY >= m_extents.y)
 		return false;
-    if (numLocalContacts == 0)
+	if (numLocalContacts == 0)
 		return false;
 
 	bool res = false;
-	_contact += m_position + (localContact.x*m_localX + localContact.y*m_localY) /
+	contact += m_position + (localContact.x * m_localX + localContact.y * m_localY) /
 		(float)numLocalContacts;
-	_numContacts++;
+	numContacts++;
 
 	// find the minimum penetration vector as a penetration amount and normal
 	float pen0 = m_extents.x - minX;
-	if (pen0 > 0 && (pen0 < _pen || _pen == 0)) {
-		_edgeNormal = m_localX;
-		_pen = pen0;
+	if (pen0 > 0 && (pen0 < pen || pen == 0)) {
+		edgeNormal = m_localX;
+		pen = pen0;
 		res = true;
 	}
 	pen0 = maxX + m_extents.x;
-	if (pen0 > 0 && (pen0 < _pen || _pen == 0)) {
-		_edgeNormal = -m_localX;
-		_pen = pen0;
+	if (pen0 > 0 && (pen0 < pen || pen == 0)) {
+		edgeNormal = -m_localX;
+		pen = pen0;
 		res = true;
 	}
 	pen0 = m_extents.y - minY;
-	if (pen0 > 0 && (pen0 < _pen || _pen == 0)) {
-		_edgeNormal = m_localY;
-		_pen = pen0;
+	if (pen0 > 0 && (pen0 < pen || pen == 0)) {
+		edgeNormal = m_localY;
+		pen = pen0;
 		res = true;
 	}
 	pen0 = maxY + m_extents.y;
-	if (pen0 > 0 && (pen0 < _pen || _pen == 0)) {
-		_edgeNormal = -m_localY;
-		_pen = pen0;
+	if (pen0 > 0 && (pen0 < pen || pen == 0)) {
+		edgeNormal = -m_localY;
+		pen = pen0;
 		res = true;
 	}
 	return res;

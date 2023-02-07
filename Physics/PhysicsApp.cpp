@@ -290,6 +290,66 @@ void PhysicsApp::DemoStartup(int _num)
 	m_physicsScene->AddActor(rightPlane);
 
 #endif // PoolTable
+		
+#ifdef SimulateContactForces
+
+	m_physicsScene->SetGravity(glm::vec2(0,-15.0f));
+	Plane* botPlane = new Plane(glm::vec2(0, 1), -50.0f, glm::vec4(1, 1, 1, 1));
+	Box* box1 = new Box(glm::vec2(0, 50), glm::vec2(-6),45,4, glm::vec2(4,7),glm::vec4(1,0,0,1));
+	Box* box2 = new Box(glm::vec2(3,-20), glm::vec2(-6),45,4, glm::vec2(4,7),glm::vec4(1,0,0,1));
+
+
+	m_physicsScene->AddActor(botPlane);
+	m_physicsScene->AddActor(box1);
+	m_physicsScene->AddActor(box2);
+
+#endif // SimulateContactForces
+
+			
+#ifdef BouncePads
+
+	m_physicsScene->SetGravity(glm::vec2(0,-15.0f));
+	Plane* botPlane = new Plane(glm::vec2(0, 1), -50.0f, glm::vec4(1, 1, 1, 1));
+	Box* box1 = new Box(glm::vec2(0, -30), glm::vec2(0), 1.5708,4, glm::vec2(4,7),glm::vec4(1,0,0,1));
+	Box* box2 = new Box(glm::vec2(3,20), glm::vec2(0),0,4, glm::vec2(4,7),glm::vec4(1,0,0,1));
+	box1->SetKinematic(true);
+	box2->SetElastcity(.9);
+
+	m_physicsScene->AddActor(botPlane);
+	m_physicsScene->AddActor(box1);
+	m_physicsScene->AddActor(box2);
+
+#endif // BouncePads
+			
+#ifdef PhysicsBuckets
+
+	m_physicsScene->SetGravity(glm::vec2(0,-9.8));
+	Plane* botPlane = new Plane(glm::vec2(0, 1), -50.0f, glm::vec4(1, 1, 1, 1));
+	Box* box1 = new Box(glm::vec2(0, 30), glm::vec2(0), 1.5708,4, glm::vec2(4,7),glm::vec4(1,0,0,1));
+
+	const int RACK_SIZE = 20;
+	Circle* balls[RACK_SIZE];
+	int dist = 10;
+	glm::vec2 startPos = glm::vec2(-50, 0);
+	for (int i = 0; i < RACK_SIZE; i++)
+	{
+		if (i % 2 ==0)
+		{
+			balls[i] = new Circle(glm::vec2(startPos.y + (i * dist), 0), glm::vec2(0), 1, 1, glm::vec4(1, 1, 1, 1));
+		}
+		else
+		{
+			balls[i] = new Circle(glm::vec2(startPos.y + (i * dist), -dist), glm::vec2(0), 1, 1, glm::vec4(1, 1, 1, 1));
+		}
+		balls[i]->SetKinematic(true);
+		m_physicsScene->AddActor(balls[i]);
+	}
+
+
+	m_physicsScene->AddActor(botPlane);
+	m_physicsScene->AddActor(box1);
+
+#endif // PhysicsBuckets
 
 
 }

@@ -7,14 +7,14 @@ public:
 		float _mass, glm::vec2 _extents, glm::vec4 _colour);
 	~Box();
 
-	bool CheckBoxCorners(const Box& _box, glm::vec2& _contact, int& _numContacts, float& pen, glm::vec2& _edgeNormal);
+	bool CheckBoxCorners(const Box& box, glm::vec2& contact, int& numContacts, float& pen, glm::vec2& edgeNormal);
 
 	// Getters
 	
 	glm::vec2 GetExtents() const { return m_extents; };
 	glm::vec2 GetColour() { return m_colour; }
-	float GetWidth() { return m_extents.x * 2; }
-	float GetHeight() { return m_extents.y * 2; }
+	float GetWidth() const { return m_extents.x * 2; }
+	float GetHeight() const { return m_extents.y * 2; }
 
 	// Setters
 

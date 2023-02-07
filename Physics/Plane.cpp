@@ -11,7 +11,7 @@ Plane::Plane() : PhysicsObject(PLANE)
 Plane::Plane(glm::vec2 _normal, float _distance, glm::vec4 _colour) : 
 	PhysicsObject(PLANE)
 {
-	m_normal = _normal;
+	m_normal = glm::normalize(_normal);
 	m_distanceToOrigin = _distance;
 	m_colour = _colour;
 
@@ -73,6 +73,9 @@ void Plane::ResolveCollision(Rigidbody* _otherActor, glm::vec2 _contact)
 	float kePre = _otherActor->GetKineticEnergy();
 
 	_otherActor->ApplyForce(force, _contact - _otherActor->GetPosition());
+
+	float pen = glm::dot(_contact, m_normal) - m_distanceToOrigin;
+	PhysicsScene::ApplyContactForces(_otherActor, nullptr, m_normal, pen);
 
 	float kePost = _otherActor->GetKineticEnergy();
 

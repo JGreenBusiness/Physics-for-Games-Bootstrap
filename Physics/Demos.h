@@ -18,6 +18,10 @@
 
 //#define SimulateBox
 //#define Bounce2Stop
-#define PoolTable
+//#define PoolTable
+
+//#define SimulateContactForces
+//#define BouncePads
+#define PhysicsBuckets
 
 

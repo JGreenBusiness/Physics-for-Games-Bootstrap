@@ -1,9 +1,10 @@
 #pragma once
 #include <glm/vec2.hpp>
 #include <vector>
+#include "Rigidbody.h"
 
 class PhysicsObject;
-
+class Rigidbody;
 
 class PhysicsScene
 {
@@ -30,7 +31,7 @@ public:
 	static bool Box2Box(PhysicsObject*, PhysicsObject*);
 
 
-
+	static void ApplyContactForces(Rigidbody* _body1, Rigidbody* _body2, glm::vec2 _norm, float _pen);
 
 
 
