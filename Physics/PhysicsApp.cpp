@@ -450,16 +450,16 @@ void PhysicsApp::DemoStartup(int _num)
 	U.push_back("00..00");
 	
 	std::vector<std::string> S;
-	S.push_back("0000..");
-	S.push_back("0000..");
+	S.push_back("000000");
+	S.push_back("000000");
 	S.push_back("..00..");
-	S.push_back("..00..");
+	S.push_back(".00...");
 	S.push_back("000000");
 	S.push_back("000000");
 	
 	std::vector<std::string> T;
-	T.push_back("0000..");
-	T.push_back("0000..");
+	T.push_back("..00..");
+	T.push_back("..00..");
 	T.push_back("..00..");
 	T.push_back("..00..");
 	T.push_back("000000");
@@ -474,19 +474,19 @@ void PhysicsApp::DemoStartup(int _num)
 	I.push_back("000000");
 	
 	std::vector<std::string> N;
-	N.push_back("0000..");
-	N.push_back("0000..");
-	N.push_back("..00..");
-	N.push_back("..00..");
+	N.push_back("00..00");
+	N.push_back("00..00");
+	N.push_back("00..00");
+	N.push_back("00..00");
 	N.push_back("000000");
 	N.push_back("000000");
 
-	SoftBody::Build(m_physicsScene, glm::vec2(-100, 0), 5.0f, 10.0f, 6.0f, J);
-	SoftBody::Build(m_physicsScene, glm::vec2(-60, 0), 5.0f, 10.0f, 6.0f, U);
-	SoftBody::Build(m_physicsScene, glm::vec2(-20, 0), 5.0f, 10.0f, 6.0f, S);
-	SoftBody::Build(m_physicsScene, glm::vec2(0, 0), 5.0f, 10.0f, 6.0f, T);
-	SoftBody::Build(m_physicsScene, glm::vec2(20, 0), 5.0f, 10.0f, 6.0f, I);
-	SoftBody::Build(m_physicsScene, glm::vec2(40, 0), 5.0f, 10.0f, 6.0f, N);
+	SoftBody::Build(m_physicsScene, glm::vec2(-105, 0), 50.0f, 10.0f, 6.0f, J);
+	SoftBody::Build(m_physicsScene, glm::vec2(-70, 0), 50.0f, 10.0f, 6.0f, U);
+	SoftBody::Build(m_physicsScene, glm::vec2(-35, 0), 50.0f, 10.0f, 6.0f, S);
+	SoftBody::Build(m_physicsScene, glm::vec2(0, 0), 50.0f,10.0f, 6.0f, T);
+	SoftBody::Build(m_physicsScene, glm::vec2(35, 0), 50.0f, 10.0f, 6.0f, I);
+	SoftBody::Build(m_physicsScene, glm::vec2(70, 0), 50.0f, 10.0f, 6.0f, N);
 
 	Plane* botPlane = new Plane(glm::vec2(0, 1), -50.0f, glm::vec4(1, 1, 1, 1));
 
