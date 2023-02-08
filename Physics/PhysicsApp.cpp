@@ -11,7 +11,6 @@
 #include "Demos.h"
 #include "glm/vec3.hpp"
 #include "Plane.h"
-#include "Box.h"
 #include <iostream>
 #include "Spring.h"
 #include "SoftBody.h"
@@ -82,9 +81,8 @@ void PhysicsApp::draw() {
 	m_2dRenderer->begin();
 
 	// draw your stuff here!
-	static float aspectRatio = 16.f / 9.f;
-	aie::Gizmos::draw2D(glm::ortho<float>(-100.f, 100.f,
-		-100.f / aspectRatio, 100.f / aspectRatio, -1.f, 1.f));
+	aie::Gizmos::draw2D(glm::ortho<float>(-m_extents, m_extents,
+		-m_extents / m_aspectRatio, m_extents / m_aspectRatio, -1.f, 1.f));
 	
 	// output some text, uses the last used colour
 	m_2dRenderer->drawText(m_font, "Press ESC to quit", 0, 0);
@@ -495,7 +493,12 @@ void PhysicsApp::DemoStartup(int _num)
 #endif // SimulateSoftBody
 
 	
+#ifdef InputTest
 
+	m_box1 = new Box(glm::vec2(0, 0), glm::vec2(0), 90, 4, glm::vec2(40, 40), glm::vec4(1, 0, 0, 1));
+	m_physicsScene->AddActor(m_box1);
+
+#endif // InputTest
 }
 
 void PhysicsApp::DemoUpdate(aie::Input* _input, float _dt)
@@ -531,6 +534,21 @@ void PhysicsApp::DemoUpdate(aie::Input* _input, float _dt)
 
 #endif // KPEDiagnostic
 
+#ifdef InputTest
+
+	if (_input->isMouseButtonDown(0))
+	{
+		int xScreen, yScreen;
+		_input->getMouseXY(&xScreen, &yScreen);
+		glm::vec2 worldPos = ScreenToWorld(glm::vec2(xScreen, yScreen));
+
+		if (m_box1->IsInside(worldPos))
+		{
+			aie::Gizmos::add2DCircle(worldPos, 5, 32, glm::vec4(0, 0, 1, 1));
+		}
+	}
+#endif // InputTest
+
 
 
 		
@@ -539,4 +557,19 @@ void PhysicsApp::DemoUpdate(aie::Input* _input, float _dt)
 float PhysicsApp::DegreeToRadian(float _degree)
 {
 	return _degree * (PI / 180.0f);
+}
+
+glm::vec2 PhysicsApp::ScreenToWorld(glm::vec2 _screenPos)
+{
+	glm::vec2 worldPos = _screenPos;
+
+	// move the centre of the screen to (0,0)
+	worldPos.x -= getWindowWidth() / 2;
+	worldPos.y -= getWindowHeight() / 2;
+
+	// scale according to our extents
+	worldPos.x *= 2.0f * m_extents / getWindowWidth();
+	worldPos.y *= 2.0f * m_extents / (m_aspectRatio * getWindowHeight());
+
+	return worldPos;
 }

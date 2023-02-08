@@ -14,6 +14,12 @@ Circle::~Circle()
 {
 }
 
+bool Circle::IsInside(glm::vec2 _point)
+{
+	return glm::distance(_point, m_position) <= m_radius;
+}
+
+
 void Circle::Draw(float _alpha)
 {
 	CalculateSmoothedPosition(_alpha);

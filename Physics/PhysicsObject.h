@@ -26,6 +26,8 @@ public:
 
 	virtual float GetKineticEnergy() = 0;
 	virtual float GetEnergy() = 0;
+	virtual bool IsInside(glm::vec2 worldPos) { return false; }
+
 	ShapeType GetShapeID() { return m_shapeID; }
 	float GetElasticity() { return m_elasticity; }
 

@@ -5,6 +5,7 @@
 #include "Input.h"
 #include <vector>
 #include "Circle.h"
+#include "Box.h"
 
 class PhysicsScene;
 class PhysicsObject;
@@ -34,6 +35,8 @@ public:
 	void DemoUpdate(aie::Input* _input, float _dt);
 	float DegreeToRadian(float _degree);
 
+	glm::vec2 ScreenToWorld(glm::vec2 _screenPos);
+
 private:
 
 	Circle* m_rocket;
@@ -41,6 +44,10 @@ private:
 	float m_MAX_FUEL_RATE = 0.1f;
 
 	Circle* m_ball1;
+	Box* m_box1;
 	int m_energyLast = 0;
+
+	const float m_extents = 100;
+	const float m_aspectRatio = 16.0f / 9.0f;
 	
 };

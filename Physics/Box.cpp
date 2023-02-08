@@ -19,22 +19,22 @@ Box::~Box()
 }
 
 // check if any of the other box's corners are inside this box
-bool Box::CheckBoxCorners(const Box& box, glm::vec2& contact, int& numContacts, float& pen, glm::vec2& edgeNormal)
+bool Box::CheckBoxCorners(const Box& _box, glm::vec2& _contact, int& _numContacts, float& _pen, glm::vec2& _edgeNormal)
 {
 	float minX, maxX, minY, maxY;
-	float boxW = box.GetExtents().x * 2;
-	float boxH = box.GetExtents().y * 2;
+	float boxW = _box.GetExtents().x * 2;
+	float boxH = _box.GetExtents().y * 2;
 	int numLocalContacts = 0;
 	glm::vec2 localContact(0, 0);
 	bool first = true;
 
 	// loop over all corners of the other box
-	for (float x = -box.GetExtents().x; x < boxW; x += boxW)
+	for (float x = -_box.GetExtents().x; x < boxW; x += boxW)
 	{
-		for (float y = -box.GetExtents().y; y < boxH; y += boxH)
+		for (float y = -_box.GetExtents().y; y < boxH; y += boxH)
 		{
 			// Get the position in worldspace
-			glm::vec2 p = box.GetPosition() + x * box.m_localX + y * box.m_localY;
+			glm::vec2 p = _box.GetPosition() + x * _box.m_localX + y * _box.m_localY;
 			// Get the position in our box's space
 			glm::vec2 p0(glm::dot(p - m_position, m_localX),
 				glm::dot(p - m_position, m_localY));
@@ -66,37 +66,38 @@ bool Box::CheckBoxCorners(const Box& box, glm::vec2& contact, int& numContacts, 
 		return false;
 
 	bool res = false;
-	contact += m_position + (localContact.x * m_localX + localContact.y * m_localY) /
+	_contact += m_position + (localContact.x * m_localX + localContact.y * m_localY) /
 		(float)numLocalContacts;
-	numContacts++;
+	_numContacts++;
 
 	// find the minimum penetration vector as a penetration amount and normal
 	float pen0 = m_extents.x - minX;
-	if (pen0 > 0 && (pen0 < pen || pen == 0)) {
-		edgeNormal = m_localX;
-		pen = pen0;
+	if (pen0 > 0 && (pen0 < _pen || _pen == 0)) {
+		_edgeNormal = m_localX;
+		_pen = pen0;
 		res = true;
 	}
 	pen0 = maxX + m_extents.x;
-	if (pen0 > 0 && (pen0 < pen || pen == 0)) {
-		edgeNormal = -m_localX;
-		pen = pen0;
+	if (pen0 > 0 && (pen0 < _pen || _pen == 0)) {
+		_edgeNormal = -m_localX;
+		_pen = pen0;
 		res = true;
 	}
 	pen0 = m_extents.y - minY;
-	if (pen0 > 0 && (pen0 < pen || pen == 0)) {
-		edgeNormal = m_localY;
-		pen = pen0;
+	if (pen0 > 0 && (pen0 < _pen || _pen == 0)) {
+		_edgeNormal = m_localY;
+		_pen = pen0;
 		res = true;
 	}
 	pen0 = maxY + m_extents.y;
-	if (pen0 > 0 && (pen0 < pen || pen == 0)) {
-		edgeNormal = -m_localY;
-		pen = pen0;
+	if (pen0 > 0 && (pen0 < _pen || _pen == 0)) {
+		_edgeNormal = -m_localY;
+		_pen = pen0;
 		res = true;
 	}
 	return res;
 }
+
 
 void Box::Draw(float _alpha)
 {

@@ -8,7 +8,8 @@ public:
 
 	~Circle();
 
-	
+	virtual bool IsInside(glm::vec2 _point) override;
+
 
 	//Getter
 	float GetRadius() { return m_radius; }
