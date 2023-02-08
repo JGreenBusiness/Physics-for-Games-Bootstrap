@@ -25,6 +25,7 @@
 //#define PhysicsBuckets
 
 //#define SimulateSprings
-#define SimulateRope
+//#define SimulateRope
+#define SimulateSoftBody
 
 

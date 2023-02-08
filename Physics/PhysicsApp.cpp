@@ -14,6 +14,7 @@
 #include "Box.h"
 #include <iostream>
 #include "Spring.h"
+#include "SoftBody.h"
 
 PhysicsApp::PhysicsApp() {
 
@@ -427,9 +428,71 @@ void PhysicsApp::DemoStartup(int _num)
 	Box* box1 = new Box(glm::vec2(0, 50), glm::vec2(5,0), 90, 4, glm::vec2(8, 8), glm::vec4(1, 0, 0, 1));
 	m_physicsScene->AddActor(box);
 	m_physicsScene->AddActor(box1);
-
-
 #endif // SimulateRope
+			
+#ifdef SimulateSoftBody
+	m_physicsScene->SetGravity(glm::vec2(0, -9.82f));
+
+	std::vector<std::string> J;
+	J.push_back("0000..");
+	J.push_back("0000..");
+	J.push_back("..00..");
+	J.push_back("..00..");
+	J.push_back("000000");
+	J.push_back("000000");
+
+	std::vector<std::string> U;
+	U.push_back("000000");
+	U.push_back("000000");
+	U.push_back("00..00");
+	U.push_back("00..00");
+	U.push_back("00..00");
+	U.push_back("00..00");
+	
+	std::vector<std::string> S;
+	S.push_back("0000..");
+	S.push_back("0000..");
+	S.push_back("..00..");
+	S.push_back("..00..");
+	S.push_back("000000");
+	S.push_back("000000");
+	
+	std::vector<std::string> T;
+	T.push_back("0000..");
+	T.push_back("0000..");
+	T.push_back("..00..");
+	T.push_back("..00..");
+	T.push_back("000000");
+	T.push_back("000000");
+	
+	std::vector<std::string> I;
+	I.push_back("000000");
+	I.push_back("000000");
+	I.push_back("..00..");
+	I.push_back("..00..");
+	I.push_back("000000");
+	I.push_back("000000");
+	
+	std::vector<std::string> N;
+	N.push_back("0000..");
+	N.push_back("0000..");
+	N.push_back("..00..");
+	N.push_back("..00..");
+	N.push_back("000000");
+	N.push_back("000000");
+
+	SoftBody::Build(m_physicsScene, glm::vec2(-100, 0), 5.0f, 10.0f, 6.0f, J);
+	SoftBody::Build(m_physicsScene, glm::vec2(-60, 0), 5.0f, 10.0f, 6.0f, U);
+	SoftBody::Build(m_physicsScene, glm::vec2(-20, 0), 5.0f, 10.0f, 6.0f, S);
+	SoftBody::Build(m_physicsScene, glm::vec2(0, 0), 5.0f, 10.0f, 6.0f, T);
+	SoftBody::Build(m_physicsScene, glm::vec2(20, 0), 5.0f, 10.0f, 6.0f, I);
+	SoftBody::Build(m_physicsScene, glm::vec2(40, 0), 5.0f, 10.0f, 6.0f, N);
+
+	Plane* botPlane = new Plane(glm::vec2(0, 1), -50.0f, glm::vec4(1, 1, 1, 1));
+
+	m_physicsScene->AddActor(botPlane);
+
+#endif // SimulateSoftBody
 
 	
 
