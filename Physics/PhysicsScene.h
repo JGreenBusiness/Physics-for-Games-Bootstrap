@@ -47,6 +47,8 @@ public:
 
 	static glm::vec2 m_gravity;
 protected:
+	void CheckForCollision();
+
 	float m_timeStep;
 	std::vector<PhysicsObject*> m_actors;
 

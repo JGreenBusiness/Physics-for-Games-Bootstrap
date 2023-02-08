@@ -57,32 +57,7 @@ void PhysicsScene::Update(float _dt)
 		accumulatedTime -= m_timeStep;
 	}
 
-	// check for collisions (ideally you'd want to have some sort of 
-	// scene management in place)
-	int actorCount = m_actors.size();
-
-	// need to check for collisions against all objects except this one.
-	for (int outer = 0; outer < actorCount - 1;outer++)
-	{
-		for (int inner = outer + 1; inner < actorCount;inner++)
-		{
-			PhysicsObject* object1 = m_actors[outer];
-			PhysicsObject* object2 = m_actors[inner];
-			int shapeId1 = object1->GetShapeID();
-			int shapeId2 = object2->GetShapeID();
-
-			// using function pointer 
-			int functionIdx = (shapeId1 * SHAPE_COUNT) + shapeId2;
-			fn collisionFunctionPtr = collisionFunctionArray[functionIdx];
-			if (collisionFunctionPtr != nullptr)
-			{
-				// did a collision occur?
-#ifndef SimulateRocket
-				collisionFunctionPtr(object1, object2);
-#endif // !SimulateRocket
-			}
-		}
-	}
+	CheckForCollision();
 }
 
 void PhysicsScene::Draw()
@@ -205,6 +180,41 @@ float PhysicsScene::GetTotalEnergy()
 		total += obj->GetEnergy();
 	}
 	return total;
+}
+
+void PhysicsScene::CheckForCollision()
+{
+	// check for collisions (ideally you'd want to have some sort of 
+	// scene management in place)
+	int actorCount = m_actors.size();
+
+	// need to check for collisions against all objects except this one.
+	for (int outer = 0; outer < actorCount - 1; outer++)
+	{
+		for (int inner = outer + 1; inner < actorCount; inner++)
+		{
+			PhysicsObject* object1 = m_actors[outer];
+			PhysicsObject* object2 = m_actors[inner];
+			int shapeId1 = object1->GetShapeID();
+			int shapeId2 = object2->GetShapeID();
+
+			// this check will ensure we don't include any joints 
+			// in the collision checks
+			if (shapeId1 < 0 || shapeId2 < 0)
+				continue;
+
+			// using function pointer 
+			int functionIdx = (shapeId1 * SHAPE_COUNT) + shapeId2;
+			fn collisionFunctionPtr = collisionFunctionArray[functionIdx];
+			if (collisionFunctionPtr != nullptr)
+			{
+				// did a collision occur?
+#ifndef SimulateRocket
+				collisionFunctionPtr(object1, object2);
+#endif // !SimulateRocket
+			}
+		}
+	}
 }
 
 

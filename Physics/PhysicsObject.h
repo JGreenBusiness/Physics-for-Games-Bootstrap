@@ -1,8 +1,9 @@
 #pragma once
 #include <glm/vec2.hpp>
 
-enum ShapeType {
-
+enum ShapeType 
+{
+	JOINT = -1,
 	PLANE = 0,
 	CIRCLE,
 	BOX,

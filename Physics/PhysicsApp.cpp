@@ -13,6 +13,7 @@
 #include "Plane.h"
 #include "Box.h"
 #include <iostream>
+#include "Spring.h"
 
 PhysicsApp::PhysicsApp() {
 
@@ -326,6 +327,8 @@ void PhysicsApp::DemoStartup(int _num)
 	m_physicsScene->SetGravity(glm::vec2(0,-9.8));
 	Plane* botPlane = new Plane(glm::vec2(0, 1), -50.0f, glm::vec4(1, 1, 1, 1));
 	Box* box1 = new Box(glm::vec2(0, 30), glm::vec2(0,0), 1.9708f,4, glm::vec2(4,7),glm::vec4(1,0,0,1));
+	Box* box2 = new Box(glm::vec2(30, 30), glm::vec2(0,0), 1.9708f,4, glm::vec2(4,7),glm::vec4(1,0,0,1));
+	Box* box3 = new Box(glm::vec2(-30, 30), glm::vec2(0,0), 1.9708f,4, glm::vec2(4,7),glm::vec4(1,0,0,1));
 	Circle* ball1 = new Circle(glm::vec2(0, 15), glm::vec2(3, 0), 1.0f, 4, glm::vec4(0, 1, 0, 1));
 	Circle* ball2 = new Circle(glm::vec2(15, 30), glm::vec2(3, 0), 1.0f, 4, glm::vec4(0, 1, 0, 1));
 	Circle* ball3 = new Circle(glm::vec2(-15, 30), glm::vec2(3, 0), 1.0f, 4, glm::vec4(0, 1, 0, 1));
@@ -348,7 +351,7 @@ void PhysicsApp::DemoStartup(int _num)
 				balls[i] = new Circle(glm::vec2(startPos.x + (i * dist), -dist - (j*dist*2)), glm::vec2(0), 1, 1, glm::vec4(1, 1, 1, 1));
 			}
 			balls[i]->SetKinematic(true);
-			balls[i]->SetElastcity(.4f);
+			//balls[i]->SetElastcity(.4f);
 			m_physicsScene->AddActor(balls[i]);
 			
 			
@@ -359,14 +362,35 @@ void PhysicsApp::DemoStartup(int _num)
 
 	m_physicsScene->AddActor(botPlane);
 
-	box1->SetElastcity(.4f);
 	m_physicsScene->AddActor(box1);
+	m_physicsScene->AddActor(box2);
+	m_physicsScene->AddActor(box3);
 	m_physicsScene->AddActor(ball1);
 	m_physicsScene->AddActor(ball2);
 	m_physicsScene->AddActor(ball3);
 	
 
 #endif // PhysicsBuckets
+			
+#ifdef SimulateSprings
+
+	m_physicsScene->SetGravity(glm::vec2(0,-9.8));
+	Plane* botPlane = new Plane(glm::vec2(0, 1), -50.0f, glm::vec4(1, 1, 1, 1));
+	
+	Circle* staticBall = new Circle(glm::vec2(0,30),glm::vec2(0),2,3,glm::vec4(0,1,0,1));
+	staticBall->SetKinematic(true);
+	
+	Circle* ball = new Circle(glm::vec2(0,15),glm::vec2(30,-30),2,3,glm::vec4(1,0,0,1));
+	Spring* spring = new Spring(staticBall, ball, 3, .5, 3, glm::vec4(1, 1, 1, 1), staticBall->GetPosition(), ball->GetPosition());
+
+	m_physicsScene->AddActor(botPlane);
+	m_physicsScene->AddActor(staticBall);
+	m_physicsScene->AddActor(ball);
+	m_physicsScene->AddActor(spring);
+
+
+
+#endif // SimulateSprings
 
 
 }

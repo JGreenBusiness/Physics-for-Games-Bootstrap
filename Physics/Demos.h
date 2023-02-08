@@ -22,6 +22,8 @@
 
 //#define SimulateContactForces
 //#define BouncePads
-#define PhysicsBuckets
+//#define PhysicsBuckets
+
+#define SimulateSprings
 
 

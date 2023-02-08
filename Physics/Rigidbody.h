@@ -23,6 +23,10 @@ public:
 
 	void CalculateSmoothedPosition(float _alpha);
 
+	glm::vec2 ToWorldSmoothed(glm::vec2 _localPos);
+	glm::vec2 ToWorld(glm::vec2 _localPos);
+
+	// Getters
 	float GetPotentialEnergy();
 	float GetKineticEnergy() override;
 	float GetEnergy() override;
@@ -36,9 +40,13 @@ public:
 	float GetAngularVelocity() { return m_angularVelocity; }
 	bool IsKinematic() { return m_isKinematic; }
 	
+	// Setters
 	void SetMass(float _mass) { m_mass = _mass; }
 	void SetPosition(glm::vec2 _pos) { m_position = _pos; }
 	void SetKinematic(bool _state) { m_isKinematic = _state; }
+
+	void CalculateAxes();
+
 
 protected:
 	glm::vec2 m_position = glm::vec2(0);
@@ -65,7 +73,6 @@ protected:
 	bool m_isKinematic;
 
 
-	void CalculateAxes();
 	
 private:
 

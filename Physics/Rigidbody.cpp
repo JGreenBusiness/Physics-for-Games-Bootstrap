@@ -33,11 +33,9 @@ void Rigidbody::FixedUpdate(glm::vec2 _gravity, float _timeStep)
 	m_velocity -= m_velocity * m_linearDrag * _timeStep;
 	m_angularVelocity -= m_angularVelocity * m_angularDrag * _timeStep;
 
-	m_position += m_velocity * _timeStep;
-	ApplyForce(_gravity * GetMass() * _timeStep,glm::vec2(0) );
-
 	m_orientation += m_angularVelocity * _timeStep;
-
+	
+	m_position += m_velocity * _timeStep;
 	
 
 	if (length(m_velocity) < MIN_LINEAR_THRESHOLD)
@@ -48,6 +46,9 @@ void Rigidbody::FixedUpdate(glm::vec2 _gravity, float _timeStep)
 	{
 		m_angularVelocity = 0;
 	}
+
+	
+	ApplyForce((_gravity * GetMass()) * _timeStep, glm::vec2(0));
 
 }
 
@@ -139,6 +140,17 @@ void Rigidbody::CalculateSmoothedPosition(float _alpha)
 	
 	m_smoothedLocalX = glm::vec2(cs,sn);
 	m_smoothedLocalY = glm::vec2(-sn,cs);
+}
+
+glm::vec2 Rigidbody::ToWorldSmoothed(glm::vec2 _localPos)
+{
+	return _localPos + (m_smoothedLocalX * m_smoothedPosition.x) + (m_smoothedLocalY * m_smoothedPosition.y);
+}
+
+glm::vec2 Rigidbody::ToWorld(glm::vec2 _localPos)
+{
+	//return _localPos + (m_localX * _localPos.x) + (m_localY * _localPos.y);
+	return m_position;
 }
 
 float Rigidbody::GetPotentialEnergy()
