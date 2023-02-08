@@ -391,7 +391,47 @@ void PhysicsApp::DemoStartup(int _num)
 
 
 #endif // SimulateSprings
+			
+#ifdef SimulateRope
 
+	m_physicsScene->SetGravity(glm::vec2(0, -9.82f));
+
+	Circle* prev = nullptr;
+	int num = 10;
+	for (int i = 0; i < num; i++)
+	{
+		// spawn a circle to the right and below the previous one, so that the whole rope acts under gravity and swings
+
+		Circle* circle = new Circle(glm::vec2(30 - i * 5,i * 3), glm::vec2(0), 10, 2, glm::vec4(1, 0, 0, 1));
+		if (i == 0)
+		{
+			circle->SetKinematic(true);
+			circle->SetElastcity(.1f);
+		}
+
+		m_physicsScene->AddActor(circle);
+
+		if (prev)
+		{
+			m_physicsScene->AddActor(new Spring(circle, prev, 500, 10, 7, glm::vec4(1, 1, 1, 1),circle->GetPosition(),prev->GetPosition()));
+		}
+
+		prev = circle;
+
+		
+	}
+
+	// add a kinematic box at an angle for the rope to drape over
+	Box* box = new Box(glm::vec2(0, -20), glm::vec2(0), 90, 4, glm::vec2(4, 4), glm::vec4(1, 0, 0, 1));
+	box->SetKinematic(true);
+	Box* box1 = new Box(glm::vec2(0, 50), glm::vec2(5,0), 90, 4, glm::vec2(8, 8), glm::vec4(1, 0, 0, 1));
+	m_physicsScene->AddActor(box);
+	m_physicsScene->AddActor(box1);
+
+
+#endif // SimulateRope
+
+	
 
 }
 
@@ -427,6 +467,8 @@ void PhysicsApp::DemoUpdate(aie::Input* _input, float _dt)
 	}
 
 #endif // KPEDiagnostic
+
+
 
 		
 }

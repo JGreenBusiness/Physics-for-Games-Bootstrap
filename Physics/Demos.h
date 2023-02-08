@@ -24,6 +24,7 @@
 //#define BouncePads
 //#define PhysicsBuckets
 
-#define SimulateSprings
+//#define SimulateSprings
+#define SimulateRope
 
 
