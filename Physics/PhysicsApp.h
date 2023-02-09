@@ -49,5 +49,7 @@ private:
 
 	const float m_extents = 100;
 	const float m_aspectRatio = 16.0f / 9.0f;
+
+	void OnBall2Check(PhysicsObject* _other);
 	
 };

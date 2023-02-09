@@ -26,7 +26,8 @@
 
 //#define SimulateSprings
 //#define SimulateRope
-#define SimulateSoftBody
-//#define InputTest
+//#define SimulateSoftBody
 
+//#define InputTest
+#define ObjectTest
 

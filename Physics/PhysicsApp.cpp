@@ -499,6 +499,33 @@ void PhysicsApp::DemoStartup(int _num)
 	m_physicsScene->AddActor(m_box1);
 
 #endif // InputTest
+
+#ifdef ObjectTest
+
+	m_physicsScene->SetGravity(glm::vec2(0, -9.82f));
+
+	Circle* ball1 = new Circle(glm::vec2(-20, 0), glm::vec2(20,0), 4.0f, 4, glm::vec4(1, 0, 0, 1));
+	Circle* ball2 = new Circle(glm::vec2(10, -20), glm::vec2(0), 4.0f, 4, glm::vec4(0, 1, 0, 1));
+	//ball2->SetKinematic(true);
+
+	m_physicsScene->AddActor(ball1);
+	m_physicsScene->AddActor(ball2);
+	m_physicsScene->AddActor(new Plane(glm::vec2(0, 1), -30,glm::vec4(1, 1, 1, 1)));
+	m_physicsScene->AddActor(new Plane(glm::vec2(1, 0), -50,glm::vec4(1, 1, 1, 1)));
+	m_physicsScene->AddActor(new Plane(glm::vec2(-1, 0), -50,glm::vec4(1, 1, 1, 1)));
+	m_physicsScene->AddActor(new Box(glm::vec2(20, 10), glm::vec2(3, 0), 0.5f, 4, glm::vec2(8, 4), glm::vec4(1, 1, 0, 1)));
+	m_physicsScene->AddActor(new Box(glm::vec2(-40, 10), glm::vec2(3, 0), 0.5f, 4, glm::vec2(8, 4), glm::vec4(1, 0, 2, 1)));
+
+	ball1->collisionCallback = [=](PhysicsObject* other) {
+		if (other == ball2)
+		{
+			std::cout << "Howzat!!?" << std::endl;
+		}
+		return;
+	};
+
+	ball2->collisionCallback = std::bind(&PhysicsApp::OnBall2Check, this, std::placeholders::_1);
+#endif // ObjectTest
 }
 
 void PhysicsApp::DemoUpdate(aie::Input* _input, float _dt)
@@ -572,4 +599,11 @@ glm::vec2 PhysicsApp::ScreenToWorld(glm::vec2 _screenPos)
 	worldPos.y *= 2.0f * m_extents / (m_aspectRatio * getWindowHeight());
 
 	return worldPos;
+}
+
+void PhysicsApp::OnBall2Check(PhysicsObject* _other)
+{
+		Plane* plane = dynamic_cast<Plane*>(_other);
+		if (plane != nullptr)
+			std::cout << "Pong!" << std::endl;
 }

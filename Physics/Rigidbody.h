@@ -50,6 +50,7 @@ public:
 	void CalculateAxes();
 
 
+	std::function<void(PhysicsObject*)> collisionCallback;
 protected:
 	glm::vec2 m_position = glm::vec2(0);
 	glm::vec2 m_lastPosition = glm::vec2(0);
@@ -74,7 +75,6 @@ protected:
 
 	bool m_isKinematic;
 
-	std::function<void(PhysicsObject*)> collisionCallback;
 	
 private:
 
