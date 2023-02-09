@@ -79,8 +79,33 @@ void Rigidbody::ResolveCollision(Rigidbody* _otherActor, glm::vec2 _contact, glm
 	// velocity of contact point on actor2
 	float v2 = glm::dot(_otherActor->m_velocity, normal) +
 		r2 * _otherActor->m_angularVelocity;
+	// if (v1 > v2) // they're moving closer
+	// {
+	// 	// calculate the effective mass at contact point for each object
+	// 	// ie how much the contact point will move due to the force applied.
+	// 	float mass1 = 1.0f / (1.0f / GetMass() + (r1 * r1) / GetMoment());
+	// 	float mass2 = 1.0f / (1.0f / _otherActor->GetMass() + (r2 * r2) / _otherActor->GetMoment());
+	//
+	// 	float elasticity = (GetElasticity() + _otherActor->GetElasticity()) / 2.0f;
+	//
+	// 	float j = glm::dot(-(1 + elasticity) * (relativeVelocity), normal) /
+	// 		glm::dot(normal, normal * ((1 / GetMass()) + (1 / _otherActor->GetMass())));
+	//
+	// 	glm::vec2 force = normal * j;
+	//
+	// 	//apply equal and opposite forces
+	// 	//ApplyForce(_otherActor, -force, _contact);
+	// 	ApplyForce(-force, _contact - m_position);
+	// 	_otherActor->ApplyForce(force, _contact - _otherActor->m_position);
+	//
+	// 	if (_pen > 0)
+	// 	{
+	// 		PhysicsScene::ApplyContactForces(this, _otherActor, normal, _pen);
+	// 	}
+	// }
+
 	if (v1 > v2) // they're moving closer
-	{
+		{
 		// calculate the effective mass at contact point for each object
 		// ie how much the contact point will move due to the force applied.
 		float mass1 = 1.0f / (1.0f / GetMass() + (r1 * r1) / GetMoment());
@@ -88,23 +113,29 @@ void Rigidbody::ResolveCollision(Rigidbody* _otherActor, glm::vec2 _contact, glm
 
 		float elasticity = (GetElasticity() + _otherActor->GetElasticity()) / 2.0f;
 
-		float j = glm::dot(-(1 + elasticity) * (relativeVelocity), normal) /
-			glm::dot(normal, normal * ((1 / GetMass()) + (1 / _otherActor->GetMass())));
+		glm::vec2 force = (1.0f + elasticity) * mass1 * mass2 /
+			(mass1 + mass2) * (v1 - v2) * normal;
 
-		glm::vec2 force = normal * j;
+		float kePre = GetKineticEnergy() + _otherActor->GetKineticEnergy();
 
-		//apply equal and opposite forces
-		//ApplyForce(_otherActor, -force, _contact);
+		//Apply equal and opposite forces
 		ApplyForce(-force, _contact - m_position);
 		_otherActor->ApplyForce(force, _contact - _otherActor->m_position);
 
+		if (collisionCallback != nullptr) 
+			collisionCallback(_otherActor);
+		if (_otherActor->collisionCallback)
+			_otherActor->collisionCallback(this);
+
+		float kePost = GetKineticEnergy() + _otherActor->GetKineticEnergy();
+
+		float deltaKE = kePost - kePre;
+		if (deltaKE > kePost * 0.01f)
+			std::cout << "Kinetic Energy discrepancy greater than 1% detected!!";
+
 		if (_pen > 0)
-		{
 			PhysicsScene::ApplyContactForces(this, _otherActor, normal, _pen);
 		}
-	}
-
-
 
 }
 

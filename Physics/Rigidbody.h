@@ -1,4 +1,6 @@
 #pragma once
+#include <functional>
+
 #include "PhysicsObject.h"
 #include <glm/glm.hpp>
 
@@ -72,7 +74,7 @@ protected:
 
 	bool m_isKinematic;
 
-
+	std::function<void(PhysicsObject*)> collisionCallback;
 	
 private:
 

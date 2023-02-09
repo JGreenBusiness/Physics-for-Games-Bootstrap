@@ -440,7 +440,7 @@ void PhysicsApp::DemoStartup(int _num)
 	J.push_back("000000");
 
 	std::vector<std::string> U;
-	U.push_back("000000");
+	U.push_back(".0000.");
 	U.push_back("000000");
 	U.push_back("00..00");
 	U.push_back("00..00");
@@ -477,7 +477,7 @@ void PhysicsApp::DemoStartup(int _num)
 	N.push_back("00..00");
 	N.push_back("00..00");
 	N.push_back("000000");
-	N.push_back("000000");
+	N.push_back(".0000.");
 
 	SoftBody::Build(m_physicsScene, glm::vec2(-105, 0), 50.0f, 10.0f, 6.0f, J);
 	SoftBody::Build(m_physicsScene, glm::vec2(-70, 0), 50.0f, 10.0f, 6.0f, U);
