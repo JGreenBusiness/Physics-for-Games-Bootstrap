@@ -29,5 +29,6 @@
 //#define SimulateSoftBody
 
 //#define InputTest
-#define ObjectTest
+//#define CollisionCallbacks
+#define TriggerTest
 

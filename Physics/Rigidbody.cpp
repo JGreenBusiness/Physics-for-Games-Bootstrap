@@ -8,7 +8,7 @@ Rigidbody::Rigidbody(ShapeType _shapeID, glm::vec2 _position, glm::vec2 _velocit
 	m_mass = _mass;
 	m_orientation = _orientation;
 	m_isKinematic = false;
-
+	m_isTrigger = false;
 }
 
 Rigidbody::~Rigidbody()
@@ -19,6 +19,28 @@ void Rigidbody::FixedUpdate(glm::vec2 _gravity, float _timeStep)
 {
 	CalculateAxes();
 
+	// trigger checks
+	if (m_isTrigger)
+	{
+		// check every object that is inside us and called triggerEnter on
+		// if they haven’t registered inside us this frame, they must have exited
+		// so remove them from our list and call triggerExit
+		for (auto it = m_objectsInside.begin(); it != m_objectsInside.end(); it++)
+		{
+			if (std::find(m_objectsInsideThisFrame.begin(), m_objectsInsideThisFrame.end(), *it) == m_objectsInsideThisFrame.end())
+			{
+				if (triggerExit)
+					triggerExit(*it);
+				it = m_objectsInside.erase(it);
+				if (it == m_objectsInside.end())
+					break;
+			}
+		}
+	}
+
+	// clear this list now for next frame
+	m_objectsInsideThisFrame.clear();
+	
 	if (m_isKinematic)
 	{
 		m_velocity = glm::vec2(0);
@@ -60,6 +82,9 @@ void Rigidbody::ApplyForce(glm::vec2 _force, glm::vec2 _pos)
 
 void Rigidbody::ResolveCollision(Rigidbody* _otherActor, glm::vec2 _contact, glm::vec2* _collisionNormal, float _pen)
 {
+	// register that these two objects have overlapped this frame
+	m_objectsInsideThisFrame.push_back(_otherActor);
+	_otherActor->m_objectsInsideThisFrame.push_back(this);
 	// find the vector between their centres, or use the provided direction
 		// of force, and make sure it's normalised
 	glm::vec2 normal = glm::normalize(_collisionNormal ? *_collisionNormal : _otherActor->GetPosition() - GetPosition());
@@ -79,30 +104,6 @@ void Rigidbody::ResolveCollision(Rigidbody* _otherActor, glm::vec2 _contact, glm
 	// velocity of contact point on actor2
 	float v2 = glm::dot(_otherActor->m_velocity, normal) +
 		r2 * _otherActor->m_angularVelocity;
-	// if (v1 > v2) // they're moving closer
-	// {
-	// 	// calculate the effective mass at contact point for each object
-	// 	// ie how much the contact point will move due to the force applied.
-	// 	float mass1 = 1.0f / (1.0f / GetMass() + (r1 * r1) / GetMoment());
-	// 	float mass2 = 1.0f / (1.0f / _otherActor->GetMass() + (r2 * r2) / _otherActor->GetMoment());
-	//
-	// 	float elasticity = (GetElasticity() + _otherActor->GetElasticity()) / 2.0f;
-	//
-	// 	float j = glm::dot(-(1 + elasticity) * (relativeVelocity), normal) /
-	// 		glm::dot(normal, normal * ((1 / GetMass()) + (1 / _otherActor->GetMass())));
-	//
-	// 	glm::vec2 force = normal * j;
-	//
-	// 	//apply equal and opposite forces
-	// 	//ApplyForce(_otherActor, -force, _contact);
-	// 	ApplyForce(-force, _contact - m_position);
-	// 	_otherActor->ApplyForce(force, _contact - _otherActor->m_position);
-	//
-	// 	if (_pen > 0)
-	// 	{
-	// 		PhysicsScene::ApplyContactForces(this, _otherActor, normal, _pen);
-	// 	}
-	// }
 
 	if (v1 > v2) // they're moving closer
 		{
@@ -118,14 +119,22 @@ void Rigidbody::ResolveCollision(Rigidbody* _otherActor, glm::vec2 _contact, glm
 
 		float kePre = GetKineticEnergy() + _otherActor->GetKineticEnergy();
 
-		//Apply equal and opposite forces
-		ApplyForce(-force, _contact - m_position);
-		_otherActor->ApplyForce(force, _contact - _otherActor->m_position);
+		if(!m_isTrigger && !_otherActor->m_isTrigger)
+		{
+			//Apply equal and opposite forces
+			ApplyForce(-force, _contact - m_position);
+			_otherActor->ApplyForce(force, _contact - _otherActor->m_position);
 
-		if (collisionCallback != nullptr) 
-			collisionCallback(_otherActor);
-		if (_otherActor->collisionCallback)
-			_otherActor->collisionCallback(this);
+			if (collisionCallback != nullptr) 
+				collisionCallback(_otherActor);
+			if (_otherActor->collisionCallback)
+				_otherActor->collisionCallback(this);
+		}
+		else
+		{
+			TriggerEnter(_otherActor);
+			_otherActor->TriggerEnter(this);
+		}
 
 		float kePost = GetKineticEnergy() + _otherActor->GetKineticEnergy();
 
@@ -182,6 +191,17 @@ glm::vec2 Rigidbody::ToWorld(glm::vec2 _localPos)
 {
 	//return _localPos + (m_localX * _localPos.x) + (m_localY * _localPos.y);
 	return m_position;
+}
+
+void Rigidbody::TriggerEnter(PhysicsObject* _otherActor)
+{
+	
+	if (m_isTrigger && std::find(m_objectsInside.begin(), m_objectsInside.end(), _otherActor) == m_objectsInside.end())
+	{
+		m_objectsInside.push_back(_otherActor);
+		if (triggerEnter != nullptr)
+			triggerEnter(_otherActor);
+	}
 }
 
 float Rigidbody::GetPotentialEnergy()

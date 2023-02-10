@@ -285,6 +285,9 @@ void PhysicsScene::CheckForCollision()
  // body2 can be null for a Plane
  void PhysicsScene::ApplyContactForces(Rigidbody* _body1, Rigidbody* _body2, glm::vec2 _norm, float _pen)
  {
+	if ((_body1 && _body1->IsTrigger()) || (_body2 && _body2->IsTrigger()))
+		return;
+	
 	 float body2Mass = _body2 ? _body2->GetMass() : INT_MAX;
 
 	 float body1Factor = body2Mass / (_body1->GetMass() + body2Mass);

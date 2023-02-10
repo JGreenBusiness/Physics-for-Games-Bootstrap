@@ -1,5 +1,6 @@
 #pragma once
 #include <functional>
+#include <list>
 
 #include "PhysicsObject.h"
 #include <glm/glm.hpp>
@@ -28,6 +29,8 @@ public:
 	glm::vec2 ToWorldSmoothed(glm::vec2 _localPos);
 	glm::vec2 ToWorld(glm::vec2 _localPos);
 
+	void TriggerEnter(PhysicsObject* _otherActor);
+
 	// Getters
 	float GetPotentialEnergy();
 	float GetKineticEnergy() override;
@@ -41,16 +44,20 @@ public:
 	glm::vec2 GetLocalY() { return m_localY; }
 	float GetAngularVelocity() { return m_angularVelocity; }
 	bool IsKinematic() { return m_isKinematic; }
+	bool IsTrigger() {return m_isTrigger;}
 	
 	// Setters
 	void SetMass(float _mass) { m_mass = _mass; }
 	void SetPosition(glm::vec2 _pos) { m_position = _pos; }
 	void SetKinematic(bool _state) { m_isKinematic = _state; }
+	void SetIsTrigger(bool _state) {m_isTrigger = _state;}
 
 	void CalculateAxes();
 
-
 	std::function<void(PhysicsObject*)> collisionCallback;
+
+	std::function<void(PhysicsObject*)> triggerEnter;
+	std::function<void(PhysicsObject*)> triggerExit;
 protected:
 	glm::vec2 m_position = glm::vec2(0);
 	glm::vec2 m_lastPosition = glm::vec2(0);
@@ -75,6 +82,9 @@ protected:
 
 	bool m_isKinematic;
 
+	bool m_isTrigger;
+	std::list<PhysicsObject*> m_objectsInside;
+	std::list<PhysicsObject*> m_objectsInsideThisFrame;
 	
 private:
 

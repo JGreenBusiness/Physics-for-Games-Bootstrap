@@ -500,7 +500,7 @@ void PhysicsApp::DemoStartup(int _num)
 
 #endif // InputTest
 
-#ifdef ObjectTest
+#ifdef CollisionCallbacks
 
 	m_physicsScene->SetGravity(glm::vec2(0, -9.82f));
 
@@ -525,7 +525,30 @@ void PhysicsApp::DemoStartup(int _num)
 	};
 
 	ball2->collisionCallback = std::bind(&PhysicsApp::OnBall2Check, this, std::placeholders::_1);
-#endif // ObjectTest
+#endif // CollisionCallbacks
+
+#ifdef TriggerTest
+
+	m_physicsScene->SetGravity(glm::vec2(0, -9.82f));
+
+	Circle* ball1 = new Circle(glm::vec2(-20, 0), glm::vec2(0), 4.0f, 4, glm::vec4(1, 0, 0, 1));
+	Circle* ball2 = new Circle(glm::vec2(10, -30), glm::vec2(0), 4.0f, 4, glm::vec4(0, 1, 0, 1));
+	ball2->SetKinematic(true);
+	ball2->SetIsTrigger(true);
+
+	m_physicsScene->AddActor(ball1);
+	m_physicsScene->AddActor(ball2);
+	m_physicsScene->AddActor(new Plane(glm::vec2(0, 1), -30,glm::vec4(1, 1, 1, 1)));
+	m_physicsScene->AddActor(new Plane(glm::vec2(1, 0), -50,glm::vec4(1, 1, 1, 1)));
+	m_physicsScene->AddActor(new Plane(glm::vec2(-1, 0), -50,glm::vec4(1, 1, 1, 1)));
+	m_physicsScene->AddActor(new Box(glm::vec2(20, 10), glm::vec2(-5, 0), 0.5f, 4, glm::vec2(8, 4), glm::vec4(1, 1, 0, 1)));
+	m_physicsScene->AddActor(new Box(glm::vec2(-40, 10), glm::vec2(13, 0), 0.5f, 4, glm::vec2(8, 4), glm::vec4(1, 0, 1, 1)));
+
+	ball2->triggerEnter = [=](PhysicsObject* other) { std::cout << "Enter:" << (ShapeType)other->GetShapeID() << std::endl; };
+	ball2->triggerExit  = [=](PhysicsObject* other) { std::cout << "Exit:"  << (ShapeType)other->GetShapeID() << std::endl; };
+	
+#endif // TriggerTest
+	
 }
 
 void PhysicsApp::DemoUpdate(aie::Input* _input, float _dt)
