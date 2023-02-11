@@ -4,7 +4,7 @@
 class SoftBody
 {
 public:
-	static void Build(PhysicsScene* scene, glm::vec2 position, float damping, float springForce, float spacing, std::vector<std::string>& strings);
+	static void Build(PhysicsScene* _scene, glm::vec2 _position, float _damping, float _springForce, float _spacing, std::vector<std::string>& _strings);
 
 protected:
 	

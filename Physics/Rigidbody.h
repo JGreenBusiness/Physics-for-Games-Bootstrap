@@ -18,7 +18,7 @@ public:
 	 ~Rigidbody();
 
 	void FixedUpdate(glm::vec2 _gravity, float _timeStep) override;
-	void ApplyForce(glm::vec2 force, glm::vec2 _pos);
+	void ApplyForce(glm::vec2 _force, glm::vec2 _pos);
 
 	void ResolveCollision(Rigidbody* _otherActor, glm::vec2 _contact, glm::vec2* _collisionNormal = nullptr, float _pen = 0.0f);
 

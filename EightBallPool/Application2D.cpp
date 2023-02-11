@@ -2,6 +2,7 @@
 #include "Texture.h"
 #include "Font.h"
 #include "Input.h"
+#include "PhysicsObject.h"
 
 Application2D::Application2D() {
 
@@ -23,8 +24,6 @@ bool Application2D::startup() {
 	m_timer = 0;
 
 	return true;
-
-
 }
 
 void Application2D::shutdown() {
@@ -101,7 +100,7 @@ void Application2D::draw() {
 	char fps[32];
 	sprintf_s(fps, 32, "FPS: %i", getFPS());
 	m_2dRenderer->drawText(m_font, fps, 0, 720 - 32);
-	m_2dRenderer->drawText(m_font, "Press ESC to quit!", 0, 720 - 64);
+	m_2dRenderer->drawText(m_font, "Welcome to 8 ball pool", 0, 720 - 64);
 
 	// done drawing sprites
 	m_2dRenderer->end();

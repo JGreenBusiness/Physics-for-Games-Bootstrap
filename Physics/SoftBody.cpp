@@ -2,10 +2,10 @@
 #include "Circle.h"
 #include "Spring.h"
 
-void SoftBody::Build(PhysicsScene* scene, glm::vec2 position, float damping, float springForce, float spacing, std::vector<std::string>& strings)
+void SoftBody::Build(PhysicsScene* _scene, glm::vec2 _position, float _damping, float _springForce, float _spacing, std::vector<std::string>& _strings)
 {
-	int numColumns = strings.size();
-	int numRows = strings[0].length();
+	int numColumns = _strings.size();
+	int numRows = _strings[0].length();
 
 	// traverse across the array and add balls where the ascii art says they should be
 	Circle** circles = new Circle * [numRows * numColumns];
@@ -13,10 +13,10 @@ void SoftBody::Build(PhysicsScene* scene, glm::vec2 position, float damping, flo
 	{
 		for (int j = 0; j < numColumns; j++)
 		{
-			if (strings[j][i] == '0')
+			if (_strings[j][i] == '0')
 			{
-				circles[i * numColumns + j] = new Circle(position + glm::vec2(i, j) * spacing, glm::vec2(0, 0), 1.0f, 2.0f, glm::vec4(1, 0, 0, 1));
-				scene->AddActor(circles[i * numColumns + j]);
+				circles[i * numColumns + j] = new Circle(_position + glm::vec2(i, j) * _spacing, glm::vec2(0, 0), 1.0f, 2.0f, glm::vec4(1, 0, 0, 1));
+				_scene->AddActor(circles[i * numColumns + j]);
 			}
 			else
 			{
@@ -37,18 +37,18 @@ void SoftBody::Build(PhysicsScene* scene, glm::vec2 position, float damping, flo
 			                                    
 			// make springs to cardinal neighbours
 			if (s11 && s01)
-				scene->AddActor(new Spring(s11, s01, damping, springForce, spacing, glm::vec4(1)));
+				_scene->AddActor(new Spring(s11, s01, _damping, _springForce, _spacing, glm::vec4(1)));
 			if (s11 && s10)
-				scene->AddActor(new Spring(s11, s10, damping, springForce, spacing, glm::vec4(1)));
+				_scene->AddActor(new Spring(s11, s10, _damping, _springForce, _spacing, glm::vec4(1)));
 			if (s10 && s00)
-				scene->AddActor(new Spring(s10, s00, damping, springForce, spacing, glm::vec4(1)));
+				_scene->AddActor(new Spring(s10, s00, _damping, _springForce, _spacing, glm::vec4(1)));
 			if (s01 && s00)
-				scene->AddActor(new Spring(s01, s00, damping, springForce, spacing, glm::vec4(1)));
+				_scene->AddActor(new Spring(s01, s00, _damping, _springForce, _spacing, glm::vec4(1)));
 
 			if (s11 && s00)
-				scene->AddActor(new Spring(s11, s00, damping, springForce, spacing*sqrt(2.0f), glm::vec4(1)));
+				_scene->AddActor(new Spring(s11, s00, _damping, _springForce, _spacing*sqrt(2.0f), glm::vec4(1)));
 			if (s01 && s10)												   
-				scene->AddActor(new Spring(s01, s10, damping, springForce, spacing * sqrt(2.0f), glm::vec4(1)));
+				_scene->AddActor(new Spring(s01, s10, _damping, _springForce, _spacing * sqrt(2.0f), glm::vec4(1)));
 
 		}
 	}

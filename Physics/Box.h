@@ -7,7 +7,7 @@ public:
 		float _mass, glm::vec2 _extents, glm::vec4 _colour);
 	~Box();
 
-	bool CheckBoxCorners(const Box& box, glm::vec2& contact, int& numContacts, float& pen, glm::vec2& edgeNormal);
+	bool CheckBoxCorners(const Box& _box, glm::vec2& _contact, int& _numContacts, float& _pen, glm::vec2& _edgeNormal);
 
 	// Getters
 	

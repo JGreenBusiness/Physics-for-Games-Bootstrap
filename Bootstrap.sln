@@ -20,6 +20,16 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Physics", "Physics\Physics.
 		{AF59BB0B-E059-4773-83DC-728A949647DA} = {AF59BB0B-E059-4773-83DC-728A949647DA}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NetixLib", "NetixLib\NetixLib.vcxproj", "{1ECC84DC-ADE2-402B-97D9-4F2EE8DC42A0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{AF59BB0B-E059-4773-83DC-728A949647DA} = {AF59BB0B-E059-4773-83DC-728A949647DA}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EightBallPool", "EightBallPool\EightBallPool.vcxproj", "{FE7D2E78-251C-4746-A184-CEE4BADB8379}"
+	ProjectSection(ProjectDependencies) = postProject
+		{AF59BB0B-E059-4773-83DC-728A949647DA} = {AF59BB0B-E059-4773-83DC-728A949647DA}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -60,6 +70,22 @@ Global
 		{DEA49362-B428-4215-8D64-4EA0B4FF0858}.Release|x64.Build.0 = Release|x64
 		{DEA49362-B428-4215-8D64-4EA0B4FF0858}.Release|x86.ActiveCfg = Release|Win32
 		{DEA49362-B428-4215-8D64-4EA0B4FF0858}.Release|x86.Build.0 = Release|Win32
+		{1ECC84DC-ADE2-402B-97D9-4F2EE8DC42A0}.Debug|x64.ActiveCfg = Debug|x64
+		{1ECC84DC-ADE2-402B-97D9-4F2EE8DC42A0}.Debug|x64.Build.0 = Debug|x64
+		{1ECC84DC-ADE2-402B-97D9-4F2EE8DC42A0}.Debug|x86.ActiveCfg = Debug|Win32
+		{1ECC84DC-ADE2-402B-97D9-4F2EE8DC42A0}.Debug|x86.Build.0 = Debug|Win32
+		{1ECC84DC-ADE2-402B-97D9-4F2EE8DC42A0}.Release|x64.ActiveCfg = Release|x64
+		{1ECC84DC-ADE2-402B-97D9-4F2EE8DC42A0}.Release|x64.Build.0 = Release|x64
+		{1ECC84DC-ADE2-402B-97D9-4F2EE8DC42A0}.Release|x86.ActiveCfg = Release|Win32
+		{1ECC84DC-ADE2-402B-97D9-4F2EE8DC42A0}.Release|x86.Build.0 = Release|Win32
+		{FE7D2E78-251C-4746-A184-CEE4BADB8379}.Debug|x64.ActiveCfg = Debug|x64
+		{FE7D2E78-251C-4746-A184-CEE4BADB8379}.Debug|x64.Build.0 = Debug|x64
+		{FE7D2E78-251C-4746-A184-CEE4BADB8379}.Debug|x86.ActiveCfg = Debug|Win32
+		{FE7D2E78-251C-4746-A184-CEE4BADB8379}.Debug|x86.Build.0 = Debug|Win32
+		{FE7D2E78-251C-4746-A184-CEE4BADB8379}.Release|x64.ActiveCfg = Release|x64
+		{FE7D2E78-251C-4746-A184-CEE4BADB8379}.Release|x64.Build.0 = Release|x64
+		{FE7D2E78-251C-4746-A184-CEE4BADB8379}.Release|x86.ActiveCfg = Release|Win32
+		{FE7D2E78-251C-4746-A184-CEE4BADB8379}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

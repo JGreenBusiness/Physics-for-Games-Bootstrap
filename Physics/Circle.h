@@ -8,7 +8,7 @@ public:
 
 	~Circle();
 
-	virtual bool IsInside(glm::vec2 _point) override;
+	bool IsInside(glm::vec2 _point) override;
 
 
 	//Getter
