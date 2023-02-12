@@ -7,8 +7,8 @@
 
 #include "PhysicsScene.h"
 
-#define MIN_LINEAR_THRESHOLD 0.01f
-#define MIN_ANGULAR_THRESHOLD 0.01f
+#define MIN_LINEAR_THRESHOLD 0.1f
+#define MIN_ANGULAR_THRESHOLD 0.1f
 
 class Rigidbody : public PhysicsObject
 {
@@ -51,6 +51,7 @@ public:
 	void SetPosition(glm::vec2 _pos) { m_position = _pos; }
 	void SetKinematic(bool _state) { m_isKinematic = _state; }
 	void SetIsTrigger(bool _state) {m_isTrigger = _state;}
+	void SetDrag(float _linearDrag, float _angularDrag) {m_linearDrag = _linearDrag; m_angularDrag = _angularDrag;}
 
 	void CalculateAxes();
 

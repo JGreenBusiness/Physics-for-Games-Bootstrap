@@ -5,6 +5,8 @@
 #include "PhysicsScene.h"
 #include <glm/ext.hpp>
 
+#include "Circle.h"
+
 
 class Application2D : public aie::Application {
 public:
@@ -31,4 +33,6 @@ protected:
 
 	const float m_extents = 100;
 	const float m_aspectRatio = 16.0f / 9.0f;
+
+	Circle* m_cueBall;
 };
