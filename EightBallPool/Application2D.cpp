@@ -35,13 +35,13 @@ bool Application2D::startup() {
 
 	const int RACK_SIZE = 6;
 	Circle* balls[RACK_SIZE];
-	int dist = 4;
-	for (int i = 0; i < RACK_SIZE; i++)
+	float radius = 1.8f;
+	for (int i = 1; i < RACK_SIZE; i++)
 	{
-		glm::vec2 ballpos = glm::vec2(-cos(60) * i * dist, sin(60) * i * dist);
+		glm::vec2 ballpos = glm::vec2(-cos(60) * i * (radius*2), sin(60.218f) * i * (radius * 2) + radius);
 		for (int j = 0; j < i; j++)
 		{
-			balls[i] = new Circle(glm::vec2(ballpos.x,ballpos.y + (dist * j)), glm::vec2(0, 0), 0.7f, 1.8, glm::vec4(0, 1, 0, 1));
+			balls[i] = new Circle(glm::vec2(ballpos.x,ballpos.y + ((radius * 2) * j)), glm::vec2(0, 0), 0.7f, radius, glm::vec4(0, 1, 0, 1));
 			m_physicsScene->AddActor(balls[i]);
 		}
 	}
@@ -97,3 +97,4 @@ void Application2D::draw() {
 	// done drawing sprites
 	m_2dRenderer->end();
 }
+

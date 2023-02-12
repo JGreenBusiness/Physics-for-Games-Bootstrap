@@ -6,6 +6,7 @@
 #include <glm/ext.hpp>
 
 #include "Circle.h"
+#include <string>
 
 
 class Application2D : public aie::Application {
@@ -20,6 +21,7 @@ public:
 	virtual void update(float deltaTime);
 	virtual void draw();
 
+
 protected:
 
 	aie::Renderer2D*	m_2dRenderer;
@@ -33,6 +35,7 @@ protected:
 
 	const float m_extents = 100;
 	const float m_aspectRatio = 16.0f / 9.0f;
+
 
 	Circle* m_cueBall;
 };
