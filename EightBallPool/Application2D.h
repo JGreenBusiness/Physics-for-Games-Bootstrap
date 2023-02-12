@@ -2,6 +2,9 @@
 
 #include "Application.h"
 #include "Renderer2D.h"
+#include "PhysicsScene.h"
+#include <glm/ext.hpp>
+
 
 class Application2D : public aie::Application {
 public:
@@ -23,4 +26,9 @@ protected:
 	aie::Font*			m_font;
 
 	float m_timer;
+
+	PhysicsScene* m_physicsScene;
+
+	const float m_extents = 100;
+	const float m_aspectRatio = 16.0f / 9.0f;
 };

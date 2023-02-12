@@ -1,6 +1,7 @@
+#pragma once
 #include <glm/vec2.hpp>
 
-enum ShapeType
+enum ShapeType 
 {
 	JOINT = -1,
 	PLANE = 0,
@@ -17,7 +18,7 @@ protected:
 	PhysicsObject(ShapeType _shapeID) : m_shapeID(_shapeID) { m_elasticity = 1; }
 
 public:
-
+	
 
 	virtual void FixedUpdate(glm::vec2 _gravity, float _timeStep) = 0;
 	virtual void Draw(float _alpha) = 0;
@@ -41,3 +42,4 @@ protected:
 
 
 };
+
