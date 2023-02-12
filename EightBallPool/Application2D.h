@@ -24,6 +24,8 @@ public:
 
 protected:
 	float ExponentialEaseIn(float _time, float _start, float _end);
+	glm::vec2 ScreenToWorld(glm::vec2 _screenPos);
+
 
 	aie::Renderer2D*	m_2dRenderer;
 	aie::Texture*		m_texture;
@@ -36,9 +38,10 @@ protected:
 	const float m_extents = 100;
 	const float m_aspectRatio = 16.0f / 9.0f;
 
-	float m_powerMax = 140.0f;
+	float m_powerMax = 4.0f;
 	float m_power = 0.0f;
 	bool m_increasePower = true;
 
 	Circle* m_cueBall;
+
 };

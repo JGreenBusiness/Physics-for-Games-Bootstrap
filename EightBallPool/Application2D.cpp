@@ -61,12 +61,12 @@ void Application2D::update(float _deltaTime) {
 
 	if (m_increasePower && m_power < m_powerMax)
 	{
-		m_power += ExponentialEaseIn(_deltaTime,0,m_powerMax);
+		m_power += ExponentialEaseIn(_deltaTime,0,m_powerMax*10);
 	}
 	else if(m_power >= 0)
 	{
 		m_increasePower = false;
-		m_power -= ExponentialEaseIn(_deltaTime, 0, m_powerMax);
+		m_power -= ExponentialEaseIn(_deltaTime, 0, m_powerMax*10);
 
 	}
 	else
@@ -75,19 +75,32 @@ void Application2D::update(float _deltaTime) {
 	}
 
 
-	// input example
 	aie::Input* input = aie::Input::getInstance();
 
-	if(input->wasKeyPressed(aie::INPUT_KEY_SPACE) && m_cueBall->GetVelocity() == glm::vec2(0))
-	{
-		m_cueBall->ApplyForce(glm::vec2(m_power,0),glm::vec2(m_cueBall->GetPosition().x - m_cueBall->GetRadius(),m_cueBall->GetPosition().y));
-	}
+	
 
 	aie::Gizmos::clear();
 	m_physicsScene->Draw();
 
-	aie::Gizmos::add2DCircle(glm::vec2(-m_extents, 0), m_powerMax/10, 25, glm::vec4(1, 1, 1, 0));
-	aie::Gizmos::add2DCircle(glm::vec2(-m_extents, 0), m_power / 10, 25, glm::vec4(1, 1, 1, 1));
+	aie::Gizmos::add2DCircle(glm::vec2(-m_extents, 0), m_powerMax*2, 25, glm::vec4(1, 1, 1, 0));
+	aie::Gizmos::add2DCircle(glm::vec2(-m_extents, 0), m_power * 2, 25, glm::vec4(1, 1, 1, 1));
+
+	
+	if (m_cueBall->GetVelocity() == glm::vec2(0))
+	{
+		int xScreen, yScreen;
+		input->getMouseXY(&xScreen, &yScreen);
+		glm::vec2 worldPos = ScreenToWorld(glm::vec2(xScreen, yScreen));
+		glm::vec2 dir = glm::normalize(worldPos - m_cueBall->GetPosition());
+
+		aie::Gizmos::add2DLine(m_cueBall->GetPosition(), m_cueBall->GetPosition() - (dir * glm::vec2(20)), glm::vec4(1));
+
+		if (input->wasKeyPressed(aie::INPUT_KEY_SPACE))
+		{
+			glm::dot(worldPos, m_cueBall->GetPosition());
+			m_cueBall->ApplyForce(-dir * (m_power * 20), m_cueBall->GetPosition() - (dir * glm::vec2(m_cueBall->GetRadius())));
+		}
+	}
 
 	m_physicsScene->Update(_deltaTime);
 
@@ -121,6 +134,21 @@ float Application2D::ExponentialEaseIn(float _time, float _start, float _end)
 	else if (_time >= 1.0f) return _end;
 
 	return _end * powf(2.0f, 10.0f * (_time - 1.0f)) + _start;
+}
+
+glm::vec2 Application2D::ScreenToWorld(glm::vec2 _screenPos)
+{
+	glm::vec2 worldPos = _screenPos;
+
+	// move the centre of the screen to (0,0)
+	worldPos.x -= getWindowWidth() / 2;
+	worldPos.y -= getWindowHeight() / 2;
+
+	// scale according to our extents
+	worldPos.x *= 2.0f * m_extents / getWindowWidth();
+	worldPos.y *= 2.0f * m_extents / (m_aspectRatio * getWindowHeight());
+
+	return worldPos;
 }
 
 
