@@ -22,8 +22,6 @@ bool Application2D::startup() {
 
 	m_font = new aie::Font("./font/consolas.ttf", 32);
 	
-	m_timer = 0;
-
 	m_physicsScene = new PhysicsScene();
 	m_physicsScene->SetGravity(glm::vec2(0));
 	Plane* topPlane = new Plane(glm::vec2(0, 1), -36.0f, glm::vec4(1, 1, 1, 1));
@@ -61,18 +59,35 @@ void Application2D::shutdown() {
 
 void Application2D::update(float _deltaTime) {
 
-	m_timer += _deltaTime;
+	if (m_increasePower && m_power < m_powerMax)
+	{
+		m_power += ExponentialEaseIn(_deltaTime,0,m_powerMax);
+	}
+	else if(m_power >= 0)
+	{
+		m_increasePower = false;
+		m_power -= ExponentialEaseIn(_deltaTime, 0, m_powerMax);
+
+	}
+	else
+	{
+		m_increasePower = true;
+	}
+
 
 	// input example
 	aie::Input* input = aie::Input::getInstance();
 
-	if(input->wasKeyPressed(aie::INPUT_KEY_SPACE))
+	if(input->wasKeyPressed(aie::INPUT_KEY_SPACE) && m_cueBall->GetVelocity() == glm::vec2(0))
 	{
-		m_cueBall->ApplyForce(glm::vec2(70.0f,0),glm::vec2(m_cueBall->GetPosition().x - m_cueBall->GetRadius(),m_cueBall->GetPosition().y));
+		m_cueBall->ApplyForce(glm::vec2(m_power,0),glm::vec2(m_cueBall->GetPosition().x - m_cueBall->GetRadius(),m_cueBall->GetPosition().y));
 	}
 
 	aie::Gizmos::clear();
 	m_physicsScene->Draw();
+
+	aie::Gizmos::add2DCircle(glm::vec2(-m_extents, 0), m_powerMax/10, 25, glm::vec4(1, 1, 1, 0));
+	aie::Gizmos::add2DCircle(glm::vec2(-m_extents, 0), m_power / 10, 25, glm::vec4(1, 1, 1, 1));
 
 	m_physicsScene->Update(_deltaTime);
 
@@ -88,13 +103,24 @@ void Application2D::draw() {
 
 	aie::Gizmos::draw2D(glm::ortho<float>(-m_extents, m_extents,
 		-m_extents / m_aspectRatio, m_extents / m_aspectRatio, -1.f, 1.f));
+
+	
 	
 	char fps[32];
 	sprintf_s(fps, 32, "FPS: %i", getFPS());
 	m_2dRenderer->drawText(m_font, fps, 0, 720 - 32);
-	m_2dRenderer->drawText(m_font, "Press ESC to quit!", 0, 720 - 64);
+	m_2dRenderer->drawText(m_font, "Welcome to pool!", 0, 720 - 64);
 
 	// done drawing sprites
 	m_2dRenderer->end();
 }
+
+float Application2D::ExponentialEaseIn(float _time, float _start, float _end)
+{
+	if (_time <= 0.0f) return _start;
+	else if (_time >= 1.0f) return _end;
+
+	return _end * powf(2.0f, 10.0f * (_time - 1.0f)) + _start;
+}
+
 
