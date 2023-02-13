@@ -7,7 +7,7 @@
 #include "Gizmos.h"
 #include "Circle.h"
 #include <iostream>
-
+#include "PoolBall.h"
 Application2D::Application2D() {
 
 }
@@ -22,13 +22,16 @@ bool Application2D::startup() {
 	m_2dRenderer = new aie::Renderer2D();
 
 	m_font = new aie::Font("./font/consolas.ttf", 32);
+	m_tableTexture = new aie::Texture("./textures/table.png");
+
 	
 	m_physicsScene = new PhysicsScene();
 	m_physicsScene->SetGravity(glm::vec2(0));
 
+	
 
-	float height = 36.0f;
-	float width = 64.5f;
+	float height = 38.0f;
+	float width = 68.0f;
 
 	Plane* topPlane = new Plane(glm::vec2(0, 1), -height, glm::vec4(1, 1, 1, 1));
 	Plane* botPlane = new Plane(glm::vec2(0, -1), -height, glm::vec4(1, 1, 1, 1));
@@ -38,18 +41,22 @@ bool Application2D::startup() {
 
 	
 	m_cueBall = new Circle(glm::vec2(-30, 0), glm::vec2(0), .7f, 1.5f, glm::vec4(1, 1, 1, 1));
+	m_projection = new Circle(glm::vec2(0, 0), glm::vec2(0), .7f, 1.5f, glm::vec4(1, 1, 1, 0));
+	m_projection->SetIsTrigger(true);
+	
 
 	const int RACK_SIZE = 6;
-	Circle* rack[RACK_SIZE];
-	std::list<Circle*> balls;
+	PoolBall* rack[RACK_SIZE];
 	float radius = 1.8f;
+	int ballNum = 1;
 	for (int i = 1; i < RACK_SIZE; i++)
 	{
 		glm::vec2 ballpos = glm::vec2(-cos(60) * i * (radius*2), sin(60.218f) * i * (radius * 2) + radius);
 		for (int j = 0; j < i; j++)
 		{
-			rack[i] = new Circle(glm::vec2(ballpos.x,ballpos.y + ((radius * 2) * j)), glm::vec2(0, 0), 0.7f, radius, glm::vec4(0, 1, 0, 1));
-			balls.push_back(rack[i]);
+			rack[i] = new PoolBall(glm::vec2(ballpos.x, ballpos.y + ((radius * 2) * j)), .7f, radius, ballNum);
+			m_balls.push_back(rack[i]);
+			ballNum++;
 			m_physicsScene->AddActor(rack[i]);
 		}
 	}
@@ -64,6 +71,7 @@ bool Application2D::startup() {
 	boxes[4] = new Box(glm::vec2(width / 2, height), glm::vec2(0), 0, 1, glm::vec2(width/2 - boxSize * 4, boxSize), glm::vec4(0, 1, 0, .8f));	//top1
 	boxes[5] = new Box(glm::vec2(-width / 2, height), glm::vec2(0), 0, 1, glm::vec2(width/2 - boxSize * 4, boxSize), glm::vec4(0, 1, 0, .8f));	//top2
 	
+
 	Circle* holes[6];
 	Box* topBox1 = boxes[4]; Box* topBox2 = boxes[5]; Box* botBox1 = boxes[2]; Box* botBox2 = boxes[3];
 	holes[0] = new Circle(glm::vec2(topBox1->GetPosition().x + topBox1->GetExtents().x + radius * 4, topBox1->GetPosition().y), glm::vec2(0, 0), 0.7f, radius*4, glm::vec4(.5f, 1, .5f, .7));				//holeTR
@@ -94,6 +102,7 @@ bool Application2D::startup() {
 	}
 
 	m_physicsScene->AddActor(m_cueBall);
+	//m_physicsScene->AddActor(m_projection);
 	//m_physicsScene->AddActor(topPlane);
 	//m_physicsScene->AddActor(botPlane);
 	//m_physicsScene->AddActor(leftPlane);
@@ -103,8 +112,9 @@ bool Application2D::startup() {
 	return true;
 }
 
-void Application2D::shutdown() {
-	
+void Application2D::shutdown() 
+{
+	delete m_tableTexture;
 }
 
 void Application2D::update(float _deltaTime) {
@@ -143,7 +153,15 @@ void Application2D::update(float _deltaTime) {
 		glm::vec2 worldPos = ScreenToWorld(glm::vec2(xScreen, yScreen));
 		glm::vec2 dir = glm::normalize(worldPos - m_cueBall->GetPosition());
 
-		aie::Gizmos::add2DLine(m_cueBall->GetPosition(), m_cueBall->GetPosition() - (dir * glm::vec2(20)), glm::vec4(1));
+		float lineDist = 50;
+		glm::vec2 endPos = m_cueBall->GetPosition() - (dir * glm::vec2(lineDist));
+		aie::Gizmos::add2DLine(m_cueBall->GetPosition(),endPos, glm::vec4(1));
+
+		// Code which moves a m_projection allong the projection line
+		//for (int i = 1; i <= glm::distance(m_cueBall->GetPosition(), endPos) / (m_projection->GetRadius() * 2); i++)
+		//{
+		//		m_projection->SetPosition(m_cueBall->GetPosition() - (dir * glm::vec2((m_projection->GetRadius() * 2) * i)));
+		//}
 
 		if (input->wasKeyPressed(aie::INPUT_KEY_SPACE))
 		{
@@ -163,11 +181,11 @@ void Application2D::draw() {
 
 	// begin drawing sprites
 	m_2dRenderer->begin();
-
-	aie::Gizmos::draw2D(glm::ortho<float>(-m_extents, m_extents,
-		-m_extents / m_aspectRatio, m_extents / m_aspectRatio, -1.f, 1.f));
+	m_2dRenderer->drawSprite(m_tableTexture, getWindowWidth()/2, getWindowHeight()/2, (getWindowWidth() / m_aspectRatio) * 1.5, (getWindowHeight() / m_aspectRatio)*1.5, 3.14159265, 1);
 
 	
+
+
 	
 	char fps[32];
 	sprintf_s(fps, 32, "FPS: %i", getFPS());
@@ -176,6 +194,9 @@ void Application2D::draw() {
 
 	// done drawing sprites
 	m_2dRenderer->end();
+
+	aie::Gizmos::draw2D(glm::ortho<float>(-m_extents, m_extents,
+		-m_extents / m_aspectRatio, m_extents / m_aspectRatio, -1.f, 1.f));
 }
 
 float Application2D::ExponentialEaseIn(float _time, float _start, float _end)

@@ -45,6 +45,7 @@ public:
 	float GetAngularVelocity() { return m_angularVelocity; }
 	bool IsKinematic() { return m_isKinematic; }
 	bool IsTrigger() {return m_isTrigger;}
+	bool getActive() { return m_active; }
 	
 	// Setters
 	void SetMass(float _mass) { m_mass = _mass; }
@@ -52,6 +53,7 @@ public:
 	void SetKinematic(bool _state) { m_isKinematic = _state; }
 	void SetIsTrigger(bool _state) {m_isTrigger = _state;}
 	void SetDrag(float _linearDrag, float _angularDrag) {m_linearDrag = _linearDrag; m_angularDrag = _angularDrag;}
+	void SetActive(bool _active) { m_active = _active; }
 
 	void CalculateAxes();
 
@@ -86,6 +88,8 @@ protected:
 	bool m_isTrigger;
 	std::list<PhysicsObject*> m_objectsInside;
 	std::list<PhysicsObject*> m_objectsInsideThisFrame;
+
+	bool m_active;
 	
 private:
 

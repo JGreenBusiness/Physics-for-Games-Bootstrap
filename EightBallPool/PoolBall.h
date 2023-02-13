@@ -8,7 +8,7 @@ public:
 
 protected:
 	int m_ballNum;
-	bool m_striped;
+	bool m_stripped;
 
 };
 

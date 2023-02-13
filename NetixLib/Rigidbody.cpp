@@ -18,6 +18,11 @@ Rigidbody::~Rigidbody()
 
 void Rigidbody::FixedUpdate(glm::vec2 _gravity, float _timeStep)
 {
+	if (!m_active)
+	{
+		return;
+	}
+
 	CalculateAxes();
 
 	// trigger checks

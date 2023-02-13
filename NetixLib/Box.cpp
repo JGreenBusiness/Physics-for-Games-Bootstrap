@@ -102,6 +102,11 @@ bool Box::CheckBoxCorners(const Box& _box, glm::vec2& _contact, int& _numContact
 
 void Box::Draw(float _alpha)
 {
+	if (!m_active)
+	{
+		return;
+	}
+
 	CalculateSmoothedPosition(_alpha);
 
 	glm::vec2 p1 = m_smoothedPosition - m_smoothedLocalX * m_extents.x
