@@ -6,6 +6,7 @@
 #include "Plane.h"
 #include "Gizmos.h"
 #include "Circle.h"
+#include <iostream>
 
 Application2D::Application2D() {
 
@@ -24,31 +25,80 @@ bool Application2D::startup() {
 	
 	m_physicsScene = new PhysicsScene();
 	m_physicsScene->SetGravity(glm::vec2(0));
-	Plane* topPlane = new Plane(glm::vec2(0, 1), -36.0f, glm::vec4(1, 1, 1, 1));
-	Plane* botPlane = new Plane(glm::vec2(0, -1), -36.0f, glm::vec4(1, 1, 1, 1));
-	Plane* leftPlane = new Plane(glm::vec2(-1, 0), -64.5f, glm::vec4(1, 1, 1, 1));
-	Plane* rightPlane = new Plane(glm::vec2(1, 0), -64.5f, glm::vec4(1, 1, 1, 1));
+
+
+	float height = 36.0f;
+	float width = 64.5f;
+
+	Plane* topPlane = new Plane(glm::vec2(0, 1), -height, glm::vec4(1, 1, 1, 1));
+	Plane* botPlane = new Plane(glm::vec2(0, -1), -height, glm::vec4(1, 1, 1, 1));
+	Plane* leftPlane = new Plane(glm::vec2(-1, 0), -width, glm::vec4(1, 1, 1, 1));
+	Plane* rightPlane = new Plane(glm::vec2(1, 0), -width, glm::vec4(1, 1, 1, 1));
+
+
 	
 	m_cueBall = new Circle(glm::vec2(-30, 0), glm::vec2(0), .7f, 1.5f, glm::vec4(1, 1, 1, 1));
 
 	const int RACK_SIZE = 6;
-	Circle* balls[RACK_SIZE];
+	Circle* rack[RACK_SIZE];
+	std::list<Circle*> balls;
 	float radius = 1.8f;
 	for (int i = 1; i < RACK_SIZE; i++)
 	{
 		glm::vec2 ballpos = glm::vec2(-cos(60) * i * (radius*2), sin(60.218f) * i * (radius * 2) + radius);
 		for (int j = 0; j < i; j++)
 		{
-			balls[i] = new Circle(glm::vec2(ballpos.x,ballpos.y + ((radius * 2) * j)), glm::vec2(0, 0), 0.7f, radius, glm::vec4(0, 1, 0, 1));
-			m_physicsScene->AddActor(balls[i]);
+			rack[i] = new Circle(glm::vec2(ballpos.x,ballpos.y + ((radius * 2) * j)), glm::vec2(0, 0), 0.7f, radius, glm::vec4(0, 1, 0, 1));
+			balls.push_back(rack[i]);
+			m_physicsScene->AddActor(rack[i]);
 		}
 	}
 
+	float boxSize = radius;
+
+	Box* boxes[6];
+	boxes[0] = new Box(glm::vec2(-width, 0), glm::vec2(0), 0, 1, glm::vec2(boxSize, height - boxSize * 4), glm::vec4(0, 1, 0, .8f));			//Left
+	boxes[1] = new Box(glm::vec2(width, 0), glm::vec2(0), 0, 1, glm::vec2(boxSize, height - boxSize * 4), glm::vec4(0, 1, 0, .8f));				//right
+	boxes[2] = new Box(glm::vec2(width/2, -height), glm::vec2(0), 0, 1, glm::vec2(width/2 - boxSize * 4, boxSize), glm::vec4(0, 1, 0, .8f));	//bot1
+	boxes[3] = new Box(glm::vec2(-width/2, -height), glm::vec2(0), 0, 1, glm::vec2(width/2 - boxSize * 4, boxSize), glm::vec4(0, 1, 0, .8f));	//bot2 
+	boxes[4] = new Box(glm::vec2(width / 2, height), glm::vec2(0), 0, 1, glm::vec2(width/2 - boxSize * 4, boxSize), glm::vec4(0, 1, 0, .8f));	//top1
+	boxes[5] = new Box(glm::vec2(-width / 2, height), glm::vec2(0), 0, 1, glm::vec2(width/2 - boxSize * 4, boxSize), glm::vec4(0, 1, 0, .8f));	//top2
+	
+	Circle* holes[6];
+	Box* topBox1 = boxes[4]; Box* topBox2 = boxes[5]; Box* botBox1 = boxes[2]; Box* botBox2 = boxes[3];
+	holes[0] = new Circle(glm::vec2(topBox1->GetPosition().x + topBox1->GetExtents().x + radius * 4, topBox1->GetPosition().y), glm::vec2(0, 0), 0.7f, radius*4, glm::vec4(.5f, 1, .5f, .7));				//holeTR
+	holes[1] = new Circle(glm::vec2(topBox2->GetPosition().x + topBox2->GetExtents().x + radius * 4, topBox2->GetPosition().y + radius * 2), glm::vec2(0, 0), 0.7f, radius * 4, glm::vec4(.5f, 1, .5f, .7));//holeT 
+	holes[2] = new Circle(glm::vec2(topBox2->GetPosition().x - topBox2->GetExtents().x - radius * 4, topBox2->GetPosition().y), glm::vec2(0, 0), 0.7f, radius * 4, glm::vec4(.5f, 1, .5f, .7));				//holeTL
+	holes[3] = new Circle(glm::vec2(botBox1->GetPosition().x + botBox1->GetExtents().x + radius * 4, botBox1->GetPosition().y), glm::vec2(0, 0), 0.7f, radius * 4, glm::vec4(.5f, 1, .5f, .7));				//holeBR
+	holes[4] = new Circle(glm::vec2(botBox2->GetPosition().x + botBox2->GetExtents().x + radius * 4, botBox2->GetPosition().y - radius * 2), glm::vec2(0, 0), 0.7f, radius * 4, glm::vec4(.5f, 1, .5f, .7));//holeB 
+	holes[5] = new Circle(glm::vec2(botBox2->GetPosition().x - botBox2->GetExtents().x - radius * 4, botBox2->GetPosition().y), glm::vec2(0, 0), 0.7f, radius * 4, glm::vec4(.5f, 1, .5f, .7));				//holeBL 
+
+	for (int i = 0; i < 6; i++)
+	{
+		holes[i]->SetIsTrigger(true);
+
+		holes[i]->triggerEnter = [=](PhysicsObject* _other)
+		{
+			Circle* ball = dynamic_cast<Circle*>(_other);
+
+			std::cout << "Enter:" << (ShapeType)_other->GetShapeID() << std::endl;
+
+			ball->SetKinematic(true);
+			ball->SetPosition(glm::vec2(100));
+		};
+
+		m_physicsScene->AddActor(holes[i]);
+
+		boxes[i]->SetKinematic(true);
+		m_physicsScene->AddActor(boxes[i]);
+	}
+
 	m_physicsScene->AddActor(m_cueBall);
-	m_physicsScene->AddActor(topPlane);
-	m_physicsScene->AddActor(botPlane);
-	m_physicsScene->AddActor(leftPlane);
-	m_physicsScene->AddActor(rightPlane);
+	//m_physicsScene->AddActor(topPlane);
+	//m_physicsScene->AddActor(botPlane);
+	//m_physicsScene->AddActor(leftPlane);
+	//m_physicsScene->AddActor(rightPlane);
+
 	
 	return true;
 }
@@ -150,5 +200,6 @@ glm::vec2 Application2D::ScreenToWorld(glm::vec2 _screenPos)
 
 	return worldPos;
 }
+
 
 
