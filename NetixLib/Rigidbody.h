@@ -46,7 +46,8 @@ public:
 	bool IsKinematic() { return m_isKinematic; }
 	bool IsTrigger() {return m_isTrigger;}
 	bool getActive() { return m_active; }
-	
+	void ResetPosition() { m_position = glm::vec2(0); }
+
 	// Setters
 	void SetMass(float _mass) { m_mass = _mass; }
 	void SetPosition(glm::vec2 _pos) { m_position = _pos; }

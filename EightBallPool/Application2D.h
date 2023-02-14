@@ -8,7 +8,7 @@
 #include "Circle.h"
 #include <string>
 #include <Texture.h>
-
+#include "Player.h"
 
 class Application2D : public aie::Application {
 public:
@@ -40,9 +40,12 @@ protected:
 	float m_power = 0.0f;
 	bool m_increasePower = true;
 
-	Circle* m_cueBall;
+	PoolBall* m_cueBall;
 	std::list<Circle*> m_balls;
 
 	aie::Texture* m_tableTexture;
 
+	Player* m_player1;
+	Player* m_player2;
+	Player* m_currentPlayer;
 };

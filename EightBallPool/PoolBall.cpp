@@ -10,6 +10,7 @@ PoolBall::PoolBall(glm::vec2 _position, float _mass, float _radius, int _ballNum
 	{
 	case 0:
 		m_colour = glm::vec4(1, .992, .816, 1); // Cream
+		m_ballType = CueBall;
 		break;
 	case 1:
 		m_colour = glm::vec4(1, 1, 0, 1); //Yeallow

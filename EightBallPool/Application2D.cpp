@@ -24,25 +24,23 @@ bool Application2D::startup() {
 	m_font = new aie::Font("./font/consolas.ttf", 32);
 	m_tableTexture = new aie::Texture("./textures/table.png");
 
-	
+	m_player1 = new Player();
+	m_player2 = new Player();
+	m_player1->SetOpponent(m_player2);
+	m_player2->SetOpponent(m_player1);
+
+	m_currentPlayer = m_player1;
+
 	m_physicsScene = new PhysicsScene();
 	m_physicsScene->SetGravity(glm::vec2(0));
-
 	
-	glm::vec2 extents = glm::vec2(75.0f, 38.0f);
-
-	Plane* topPlane = new Plane(glm::vec2(0, 1), -extents.y, glm::vec4(1, 1, 1, 1));
-	Plane* botPlane = new Plane(glm::vec2(0, -1), -extents.y, glm::vec4(1, 1, 1, 1));
-	Plane* leftPlane = new Plane(glm::vec2(-1, 0), -extents.x, glm::vec4(1, 1, 1, 1));
-	Plane* rightPlane = new Plane(glm::vec2(1, 0), -extents.x, glm::vec4(1, 1, 1, 1));
-
-
-	
-	m_cueBall = new Circle(glm::vec2(-30, 0), glm::vec2(0), .7f, 1.5f, glm::vec4(1, 1, 1, 1));
+	m_cueBall = new PoolBall(glm::vec2(-30, 0), .7f, 1.5f,0);
 	
 
 	// Ball Spawning Logic 
 	//-----------------------------------------------------------
+	glm::vec2 tableExtents = glm::vec2(75.0f, 38.0f);
+
 	const int RACK_SIZE = 6;
 	PoolBall* rack[RACK_SIZE];
 	float radius = 1.8f;
@@ -66,8 +64,8 @@ bool Application2D::startup() {
 
 	Box* boxes[6];
 	glm::vec4 boxColour = glm::vec4(0, 1, 0, .8f);
-	float width = extents.x * 2;
-	float height = extents.y * 2;
+	float width = tableExtents.x * 2;
+	float height = tableExtents.y * 2;
 
 	Circle* holes[6];
 	int holeIndex = 0;
@@ -79,23 +77,23 @@ bool Application2D::startup() {
 	{
 		float dist = i * width;
 		int index = i + 2;
-		boxes[index] = new Box(glm::vec2(-extents.x + dist, 0), glm::vec2(0), 0, 1, glm::vec2(boxSize, extents.y - boxSize*4), boxColour);
+		boxes[index] = new Box(glm::vec2(-tableExtents.x + dist, 0), glm::vec2(0), 0, 1, glm::vec2(boxSize, tableExtents.y - boxSize*4), boxColour);
 
 		Circle* boxCap;
 		for (int j = 0; j < 2; j++)
 		{
 			float h;
 			float s;
-			j % 2 == 0 ? h = -extents.y : h = extents.y;
+			j % 2 == 0 ? h = -tableExtents.y : h = tableExtents.y;
 			j % 2 == 0 ? s = -boxSize * 4 : s = boxSize * 4;
 
-			boxCap = new Circle(glm::vec2(-extents.x + dist, h - s ), glm::vec2(0), 1, boxSize, boxColour);
+			boxCap = new Circle(glm::vec2(-tableExtents.x + dist, h - s ), glm::vec2(0), 1, boxSize, boxColour);
 			boxCap->SetKinematic(true);
 			m_physicsScene->AddActor(boxCap);
 
 
 
-			holes[holeIndex] = new Circle(glm::vec2(-extents.x + dist, h), glm::vec2(0), 1, holeRadius, holeColour);
+			holes[holeIndex] = new Circle(glm::vec2(-tableExtents.x + dist, h), glm::vec2(0), 1, holeRadius, holeColour);
 			holeIndex++;
 		}
 
@@ -110,23 +108,23 @@ bool Application2D::startup() {
 		float dist = i * width/2;
 
 		int index = i + 4;
-		boxes[index] = new Box(glm::vec2(extents.x/2 - dist, extents.y), glm::vec2(0), 0, 1, glm::vec2(extents.x/2 - boxSize * 4, boxSize), boxColour);
+		boxes[index] = new Box(glm::vec2(tableExtents.x/2 - dist, tableExtents.y), glm::vec2(0), 0, 1, glm::vec2(tableExtents.x/2 - boxSize * 4, boxSize), boxColour);
 
 		Circle* boxCap;
 		for (int j = 0; j < 2; j++)
 		{
 			float w;
 			float s;
-			j % 2 == 0 ? w = -extents.x/2 : w = extents.x/2;
+			j % 2 == 0 ? w = -tableExtents.x/2 : w = tableExtents.x/2;
 			j % 2 == 0 ? s = -boxSize * 4 : s = boxSize * 4;
 
-			boxCap = new Circle(glm::vec2(extents.x / 2 + w - s - dist, extents.y), glm::vec2(0), 1, boxSize, boxColour);
+			boxCap = new Circle(glm::vec2(tableExtents.x / 2 + w - s - dist, tableExtents.y), glm::vec2(0), 1, boxSize, boxColour);
 			boxCap->SetKinematic(true);
 			m_physicsScene->AddActor(boxCap);
 
 			if (j < 1 && i ==0)
 			{
-				holes[holeIndex] = new Circle(glm::vec2(extents.x / 2 + w - dist, extents.y + holeRadius), glm::vec2(0), 1, holeRadius, holeColour);
+				holes[holeIndex] = new Circle(glm::vec2(tableExtents.x / 2 + w - dist, tableExtents.y + holeRadius), glm::vec2(0), 1, holeRadius, holeColour);
 				holeIndex++;
 			}
 		}
@@ -139,23 +137,23 @@ bool Application2D::startup() {
 	{
 		float dist = i * width/2;
 
-		boxes[i] = new Box(glm::vec2(extents.x/2 - dist, -extents.y), glm::vec2(0), 0, 1, glm::vec2(extents.x/2 - boxSize * 4, boxSize), boxColour);
+		boxes[i] = new Box(glm::vec2(tableExtents.x/2 - dist, -tableExtents.y), glm::vec2(0), 0, 1, glm::vec2(tableExtents.x/2 - boxSize * 4, boxSize), boxColour);
 
 		Circle* boxCap;
 		for (int j = 0; j < 2; j++)
 		{
 			float w;
 			float s;
-			j % 2 == 0 ? w = -extents.x/2 : w = extents.x/2;
+			j % 2 == 0 ? w = -tableExtents.x/2 : w = tableExtents.x/2;
 			j % 2 == 0 ? s = -boxSize * 4 : s = boxSize * 4;
 
-			boxCap = new Circle(glm::vec2(extents.x / 2 + w - s - dist, -extents.y), glm::vec2(0), 1, boxSize, boxColour);
+			boxCap = new Circle(glm::vec2(tableExtents.x / 2 + w - s - dist, -tableExtents.y), glm::vec2(0), 1, boxSize, boxColour);
 			boxCap->SetKinematic(true);
 			m_physicsScene->AddActor(boxCap);
 
 			if (j < 1 && i == 0)
 			{
-				holes[holeIndex] = new Circle(glm::vec2(extents.x / 2 + w - dist, -extents.y - holeRadius), glm::vec2(0), 1, holeRadius, holeColour);
+				holes[holeIndex] = new Circle(glm::vec2(tableExtents.x / 2 + w - dist, -tableExtents.y - holeRadius), glm::vec2(0), 1, holeRadius, holeColour);
 				holeIndex++;
 			}
 		}
@@ -173,12 +171,22 @@ bool Application2D::startup() {
 
 		holes[i]->triggerEnter = [=](PhysicsObject* _other)
 		{
-			Circle* ball = dynamic_cast<Circle*>(_other);
-
-			std::cout << "Enter:" << (ShapeType)_other->GetShapeID() << std::endl;
+			PoolBall* ball = dynamic_cast<PoolBall*>(_other);
 
 			ball->SetKinematic(true);
-			ball->SetPosition(glm::vec2(100));
+			ball->ResetPosition();
+			ball->SetActive(false);
+
+			if (!m_currentPlayer->OwnsBallType())
+			{
+				if (ball->GetType() == BallType::CueBall || ball->GetType() == BallType::BlackBall)
+					return;
+
+				m_currentPlayer->SetOwnedBallType(ball->GetType());
+				m_currentPlayer->AddSunkBall();
+			}
+
+			std::cout << "Balls sunk: " << m_currentPlayer->GetBallsSunk() << std::endl << "Owned BallType:" << (BallType)m_currentPlayer->GetOwnedBallType() << std::endl;
 		};
 
 		m_physicsScene->AddActor(holes[i]);
@@ -186,11 +194,7 @@ bool Application2D::startup() {
 	//-----------------------------------------------------------
 
 	m_physicsScene->AddActor(m_cueBall);
-	//m_physicsScene->AddActor(m_projection);
-	//m_physicsScene->AddActor(topPlane);
-	//m_physicsScene->AddActor(botPlane);
-	//m_physicsScene->AddActor(leftPlane);
-	//m_physicsScene->AddActor(rightPlane);
+
 
 	
 	return true;
@@ -199,6 +203,19 @@ bool Application2D::startup() {
 void Application2D::shutdown() 
 {
 	delete m_tableTexture;
+
+	if (m_player1 != nullptr)
+	{
+		m_player1 = nullptr;
+
+		delete m_player1;
+	}
+
+	if (m_player2 != nullptr)
+	{
+		m_player2 = nullptr;
+		delete m_player2;
+	}	
 }
 
 void Application2D::update(float _deltaTime) {
@@ -250,7 +267,7 @@ void Application2D::update(float _deltaTime) {
 		if (input->wasKeyPressed(aie::INPUT_KEY_SPACE))
 		{
 			glm::dot(worldPos, m_cueBall->GetPosition());
-			m_cueBall->ApplyForce(-dir * (m_power * 20), m_cueBall->GetPosition() - (dir * glm::vec2(m_cueBall->GetRadius())));
+			m_cueBall->ApplyForce(-dir * (m_power * 20), dir * (m_cueBall->GetRadius()));
 		}
 	}
 

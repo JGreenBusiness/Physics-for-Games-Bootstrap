@@ -24,6 +24,8 @@ public:
 
 	void ResetVelocity() { m_velocity = glm::vec2(0); }
 
+
+
 	void CalculateSmoothedPosition(float _alpha);
 
 	glm::vec2 ToWorldSmoothed(glm::vec2 _localPos);
