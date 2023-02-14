@@ -5,7 +5,7 @@ enum BallType
 {
 	Unowned,
 	CueBall,
-	Stripped,
+	Striped,
 	Solid,
 	BlackBall
 };

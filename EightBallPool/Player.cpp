@@ -20,7 +20,7 @@ void Player::SetOwnedBallType(BallType _ballType)
 	 {
 		 if (_ballType == Solid)
 		 {
-			 m_opponent->SetOwnedBallType(Stripped);
+			 m_opponent->SetOwnedBallType(Striped);
 		 }
 		 else
 		 {

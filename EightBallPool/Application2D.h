@@ -44,7 +44,8 @@ protected:
 
 	PoolBall* m_cueBall;
 	std::list<PoolBall*> m_balls;
-
+	glm::vec2 m_lineEndPos;
+	
 	aie::Texture* m_tableTexture;
 
 	Player* m_player1;
