@@ -10,6 +10,7 @@ public:
 	int GetBallsSunk() { return m_ballsSunk; }
 	BallType GetOwnedBallType() { return m_ownedBallType; }
 	bool OwnsBallType() { return m_ownedBallType != Unowned; }
+	Player* GetOpponent() { return m_opponent; }
 
 	// Setters
 	void SetBallsSunk(int _sunkBalls) { m_ballsSunk = _sunkBalls; }

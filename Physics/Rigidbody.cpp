@@ -82,6 +82,7 @@ void Rigidbody::ApplyForce(glm::vec2 _force, glm::vec2 _pos)
 
 void Rigidbody::ResolveCollision(Rigidbody* _otherActor, glm::vec2 _contact, glm::vec2* _collisionNormal, float _pen)
 {
+
 	// register that these two objects have overlapped this frame
 	m_objectsInsideThisFrame.push_back(_otherActor);
 	_otherActor->m_objectsInsideThisFrame.push_back(this);

@@ -29,7 +29,7 @@ bool Application2D::startup() {
 	m_player1->SetOpponent(m_player2);
 	m_player2->SetOpponent(m_player1);
 
-	m_currentPlayer = m_player1;
+	m_currentPlayer = m_player2;
 
 	m_physicsScene = new PhysicsScene();
 	m_physicsScene->SetGravity(glm::vec2(0));
@@ -47,10 +47,10 @@ bool Application2D::startup() {
 	int ballNum = 1;
 	for (int i = 1; i < RACK_SIZE; i++)
 	{
-		glm::vec2 ballpos = glm::vec2(-cos(60) * i * (radius*2), sin(60.218f) * i * (radius * 2) + radius);
 		for (int j = 0; j < i; j++)
 		{
-			rack[i] = new PoolBall(glm::vec2(ballpos.x, ballpos.y + ((radius * 2) * j)), .7f, radius, ballNum);
+			glm::vec2 ballpos = glm::vec2(i * (radius * 2), radius + ((radius * 2) * j) -(i* (radius)));
+			rack[i] = new PoolBall(glm::vec2(ballpos.x, ballpos.y), .7f, radius, ballNum);
 			m_balls.push_back(rack[i]);
 			ballNum++;
 			m_physicsScene->AddActor(rack[i]);
@@ -183,9 +183,8 @@ bool Application2D::startup() {
 					return;
 
 				m_currentPlayer->SetOwnedBallType(ball->GetType());
-				m_currentPlayer->AddSunkBall();
 			}
-
+			m_currentPlayer->AddSunkBall();
 			std::cout << "Balls sunk: " << m_currentPlayer->GetBallsSunk() << std::endl << "Owned BallType:" << (BallType)m_currentPlayer->GetOwnedBallType() << std::endl;
 		};
 
@@ -258,16 +257,12 @@ void Application2D::update(float _deltaTime) {
 		glm::vec2 endPos = m_cueBall->GetPosition() - (dir * glm::vec2(lineDist));
 		aie::Gizmos::add2DLine(m_cueBall->GetPosition(),endPos, glm::vec4(1));
 
-		// Code which moves a m_projection allong the projection line
-		//for (int i = 1; i <= glm::distance(m_cueBall->GetPosition(), endPos) / (m_projection->GetRadius() * 2); i++)
-		//{
-		//		m_projection->SetPosition(m_cueBall->GetPosition() - (dir * glm::vec2((m_projection->GetRadius() * 2) * i)));
-		//}
-
 		if (input->wasKeyPressed(aie::INPUT_KEY_SPACE))
 		{
 			glm::dot(worldPos, m_cueBall->GetPosition());
 			m_cueBall->ApplyForce(-dir * (m_power * 20), dir * (m_cueBall->GetRadius()));
+
+			m_currentPlayer = m_currentPlayer->GetOpponent();
 		}
 	}
 
@@ -320,6 +315,22 @@ glm::vec2 Application2D::ScreenToWorld(glm::vec2 _screenPos)
 	worldPos.y *= 2.0f * m_extents / (m_aspectRatio * getWindowHeight());
 
 	return worldPos;
+}
+
+glm::vec2 Application2D::WorldToScreen(glm::vec2 _worldPos)
+{
+	glm::vec2 screenPos = _worldPos;
+
+
+	/*screenPos.x /= 2.0f;
+	screenPos.y /= 2.0f;
+
+
+	screenPos.x += getWindowWidth() / 2;
+	screenPos.y += getWindowHeight() / 2;*/
+
+
+	return screenPos;
 }
 
 

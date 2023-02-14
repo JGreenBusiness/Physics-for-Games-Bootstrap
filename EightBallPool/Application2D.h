@@ -26,6 +26,8 @@ public:
 protected:
 	float ExponentialEaseIn(float _time, float _start, float _end);
 	glm::vec2 ScreenToWorld(glm::vec2 _screenPos);
+	glm::vec2 WorldToScreen(glm::vec2 _screenPos);
+
 
 	aie::Renderer2D*	m_2dRenderer;
 	aie::Font*			m_font;
