@@ -1,5 +1,12 @@
 #pragma once
 #include "Circle.h"
+
+enum BallType
+{
+	Stripped,
+	Solid
+};
+
 class PoolBall : public Circle
 {
 public:
@@ -8,7 +15,7 @@ public:
 
 protected:
 	int m_ballNum;
-	bool m_stripped;
+	BallType m_ballType;
 
 };
 

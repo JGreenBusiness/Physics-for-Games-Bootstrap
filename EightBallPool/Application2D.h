@@ -7,6 +7,7 @@
 
 #include "Circle.h"
 #include <string>
+#include <Texture.h>
 
 
 class Application2D : public aie::Application {
@@ -40,7 +41,6 @@ protected:
 	bool m_increasePower = true;
 
 	Circle* m_cueBall;
-	Circle* m_projection;
 	std::list<Circle*> m_balls;
 
 	aie::Texture* m_tableTexture;

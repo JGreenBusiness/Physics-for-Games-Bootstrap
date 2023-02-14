@@ -30,15 +30,15 @@ void Circle::Draw(float _alpha)
 	// << Temporary code which shows the previous and next frame >>
 	//----------------------------------------------------------------
 	
-	 CalculateSmoothedPosition(alpha);
+	 CalculateSmoothedPosition(_alpha);
 	
 	 // draw the physics frames at half alpha
-	 glm::vec4 halfColor = m_color;
+	 glm::vec4 halfColor = m_colour;
 	 halfColor.a = 0.5f;
 	 aie::Gizmos::add2DCircle(m_position, m_radius, 12, halfColor);
 	 aie::Gizmos::add2DCircle(m_lastPosition, m_radius, 12, halfColor);
 	
-	 aie::Gizmos::add2DCircle(m_smoothedPosition, m_radius, 12, m_color);
+	 aie::Gizmos::add2DCircle(m_smoothedPosition, m_radius, 12, m_colour);
 	
 	//----------------------------------------------------------------
 

@@ -5,6 +5,7 @@ PoolBall::PoolBall(glm::vec2 _position, float _mass, float _radius, int _ballNum
 {
 	m_ballNum = _ballNum;
 
+	m_ballType = Solid;
 	switch (m_ballNum)
 	{
 	case 0:
@@ -15,52 +16,58 @@ PoolBall::PoolBall(glm::vec2 _position, float _mass, float _radius, int _ballNum
 		break;
 	case 9:
 		m_colour = glm::vec4(1, 1, 0,0); //Yeallow
-		m_stripped = true;
+		m_ballType = Stripped;
 		break;
 	case 2:
 		m_colour = glm::vec4(0, 0, 1, 1); // Blue
 		break;
 	case 10:
 		m_colour = glm::vec4(0, 0, 1, 0); // Blue
-		m_stripped = true;
+		m_ballType = Stripped;
+
 		break;
 	case 3:
 		m_colour = glm::vec4(1, .4, .4, 1); // Light Red
 		break;
 	case 11:
 		m_colour = glm::vec4(1, .4, .4, 0); // Light Red
-		m_stripped = true;
+		m_ballType = Stripped;
+
 		break;
 	case 4:
 		m_colour = glm::vec4(.627, .125, .941, 1); // Purple
 		break;
 	case 12:
 		m_colour = glm::vec4(.627, .125, .941, 0); // Purple
-		m_stripped = true;
+		m_ballType = Stripped;
+
 		break;
 	case 5:
 		m_colour = glm::vec4(1, .647, 0, 1); // Orange
 		break;
 	case 13:
 		m_colour = glm::vec4(1, .647, 0, 0); // Orange
-		m_stripped = true;
+		m_ballType = Stripped;
+
 		break;
 	case 6:
 		m_colour = glm::vec4(0, 1, 0, 1); // Green
 		break;
 	case 14:
 		m_colour = glm::vec4(0, 1, 0, 0); // Green
-		m_stripped = true;
+		m_ballType = Stripped;
+
 		break;
 	case 7:
 		m_colour = glm::vec4(1, 0, 0, 1); // Red
 		break;
 	case 15:
 		m_colour = glm::vec4(1, 0, 0, 0); // Red
-		m_stripped = true;
+		m_ballType = Stripped;
+
 		break;
 	case 8:
-		m_colour = glm::vec4(1, 1, 1, 0); // Black
+		m_colour = glm::vec4(0,0, 0, 1); // Black
 		break;
 	default:
 		m_colour = glm::vec4(1, 1, 1, 1); // White
