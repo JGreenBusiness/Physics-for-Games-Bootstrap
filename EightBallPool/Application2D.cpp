@@ -185,7 +185,7 @@ bool Application2D::startup() {
 				m_currentPlayer->SetOwnedBallType(ball->GetType());
 			}
 			m_currentPlayer->AddSunkBall();
-			std::cout << "Balls sunk: " << m_currentPlayer->GetBallsSunk() << std::endl << "Owned BallType:" << (BallType)m_currentPlayer->GetOwnedBallType() << std::endl;
+			std::cout << m_currentPlayer << " | Balls sunk: " << m_currentPlayer->GetBallsSunk()<< " | " << "Owned BallType:" << (BallType)m_currentPlayer->GetOwnedBallType() << std::endl;
 		};
 
 		m_physicsScene->AddActor(holes[i]);
@@ -219,20 +219,20 @@ void Application2D::shutdown()
 
 void Application2D::update(float _deltaTime) {
 
-	if (m_increasePower && m_power < m_powerMax)
-	{
-		m_power += ExponentialEaseIn(_deltaTime,0,m_powerMax*10);
-	}
-	else if(m_power >= 0)
-	{
-		m_increasePower = false;
-		m_power -= ExponentialEaseIn(_deltaTime, 0, m_powerMax*10);
+	//if (m_increasePower && m_power < m_powerMax)
+	//{
+	//	m_power += ExponentialEaseIn(m_physicsScene->GetTimeStep(), 0, m_powerMax * 10);
+	//}
+	//else if(m_power >= 0)
+	//{
+	//	m_increasePower = false;
+	//	m_power -= ExponentialEaseIn(_deltaTime, 0, m_powerMax*10);
 
-	}
-	else
-	{
-		m_increasePower = true;
-	}
+	//}
+	//else
+	//{
+	//	m_increasePower = true;
+	//}
 
 
 	aie::Input* input = aie::Input::getInstance();
@@ -242,8 +242,8 @@ void Application2D::update(float _deltaTime) {
 	aie::Gizmos::clear();
 	m_physicsScene->Draw();
 
-	aie::Gizmos::add2DCircle(glm::vec2(-m_extents, 0), m_powerMax*2, 25, glm::vec4(1, 1, 1, 0));
-	aie::Gizmos::add2DCircle(glm::vec2(-m_extents, 0), m_power * 2, 25, glm::vec4(1, 1, 1, 1));
+	/*aie::Gizmos::add2DCircle(glm::vec2(-m_extents, 0), m_powerMax*2, 25, glm::vec4(1, 1, 1, 0));
+	aie::Gizmos::add2DCircle(glm::vec2(-m_extents, 0), m_power * 2, 25, glm::vec4(1, 1, 1, 1));*/
 
 	
 	if (m_cueBall->GetVelocity() == glm::vec2(0))
@@ -253,14 +253,21 @@ void Application2D::update(float _deltaTime) {
 		glm::vec2 worldPos = ScreenToWorld(glm::vec2(xScreen, yScreen));
 		glm::vec2 dir = glm::normalize(worldPos - m_cueBall->GetPosition());
 
-		float lineDist = 50;
-		glm::vec2 endPos = m_cueBall->GetPosition() - (dir * glm::vec2(lineDist));
+
+		float dist = glm::distance(m_cueBall->GetPosition(), worldPos);
+		float distCap = 20;
+		dist > distCap ? m_power = distCap * 3.1f : m_power = dist * 3.1f;
+
+
+		glm::vec2 endPos = m_cueBall->GetPosition() - (dir * glm::vec2(dist));
 		aie::Gizmos::add2DLine(m_cueBall->GetPosition(),endPos, glm::vec4(1));
+
+
 
 		if (input->wasKeyPressed(aie::INPUT_KEY_SPACE))
 		{
 			glm::dot(worldPos, m_cueBall->GetPosition());
-			m_cueBall->ApplyForce(-dir * (m_power * 20), dir * (m_cueBall->GetRadius()));
+			m_cueBall->ApplyForce(-dir * (m_power), dir * (m_cueBall->GetRadius()));
 
 			m_currentPlayer = m_currentPlayer->GetOpponent();
 		}
