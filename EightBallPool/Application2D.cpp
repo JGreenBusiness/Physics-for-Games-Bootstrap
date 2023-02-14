@@ -185,7 +185,7 @@ bool Application2D::startup() {
 				m_currentPlayer->SetOwnedBallType(ball->GetType());
 			}
 			m_currentPlayer->AddSunkBall();
-			std::cout << m_currentPlayer << " | Balls sunk: " << m_currentPlayer->GetBallsSunk()<< " | " << "Owned BallType:" << (BallType)m_currentPlayer->GetOwnedBallType() << std::endl;
+			std::cout << m_currentPlayer << " | Ball sunk: " << ball->GetBallNum() << " | " << "Owned BallType:" << (BallType)m_currentPlayer->GetOwnedBallType() << std::endl;
 		};
 
 		m_physicsScene->AddActor(holes[i]);
@@ -255,8 +255,8 @@ void Application2D::update(float _deltaTime) {
 
 
 		float dist = glm::distance(m_cueBall->GetPosition(), worldPos);
-		float distCap = 20;
-		dist > distCap ? m_power = distCap * 3.1f : m_power = dist * 3.1f;
+		float distCap = 50;
+		dist > distCap ? m_power = distCap * 2, dist = distCap : m_power = dist * 2;
 
 
 		glm::vec2 endPos = m_cueBall->GetPosition() - (dir * glm::vec2(dist));
