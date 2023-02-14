@@ -1,6 +1,6 @@
 #pragma once
 #include "Circle.h"
-
+#include "Texture.h"
 enum BallType
 {
 	Unowned,
@@ -18,10 +18,15 @@ public:
 
 	int GetBallNum() { return m_ballNum; }
 	BallType GetType() { return m_ballType; }
+	aie::Texture* GetTexture() { return m_texture; }
+
+	void SetTexture(aie::Texture* _texture) { m_texture = _texture; }
 
 protected:
 	int m_ballNum;
 	BallType m_ballType;
+	aie::Texture* m_texture;
+
 
 };
 

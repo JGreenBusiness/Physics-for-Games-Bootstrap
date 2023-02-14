@@ -43,7 +43,7 @@ protected:
 	bool m_increasePower = true;
 
 	PoolBall* m_cueBall;
-	std::list<Circle*> m_balls;
+	std::list<PoolBall*> m_balls;
 
 	aie::Texture* m_tableTexture;
 

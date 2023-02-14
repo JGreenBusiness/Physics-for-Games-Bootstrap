@@ -24,6 +24,7 @@ bool Application2D::startup() {
 	m_font = new aie::Font("./font/consolas.ttf", 32);
 	m_tableTexture = new aie::Texture("./textures/table.png");
 
+
 	m_player1 = new Player();
 	m_player2 = new Player();
 	m_player1->SetOpponent(m_player2);
@@ -35,7 +36,8 @@ bool Application2D::startup() {
 	m_physicsScene->SetGravity(glm::vec2(0));
 	
 	m_cueBall = new PoolBall(glm::vec2(-30, 0), .7f, 1.5f,0);
-	
+	m_balls.push_back(m_cueBall);
+
 
 	// Ball Spawning Logic 
 	//-----------------------------------------------------------
@@ -56,7 +58,25 @@ bool Application2D::startup() {
 			m_physicsScene->AddActor(rack[i]);
 		}
 	}
+
 	//-----------------------------------------------------------
+	
+	// Ball Texture Assignment
+	//-----------------------------------------------------------
+	ballNum = 0;
+	for (auto ball : m_balls)
+	{
+		std::string fileName = "./textures/ball_0";
+		//append ball num
+		fileName += ".png";
+
+		ball->SetTexture(new aie::Texture(fileName.c_str()));
+		ballNum++;
+	}
+
+	//-----------------------------------------------------------
+
+
 
 	// Boundary and hole spawning logic
 	//-----------------------------------------------------------
@@ -187,7 +207,7 @@ bool Application2D::startup() {
 			m_currentPlayer->AddSunkBall();
 			std::cout << m_currentPlayer << " | Ball sunk: " << ball->GetBallNum() << " | " << "Owned BallType:" << (BallType)m_currentPlayer->GetOwnedBallType() << std::endl;
 		};
-
+		
 		m_physicsScene->AddActor(holes[i]);
 	}
 	//-----------------------------------------------------------
@@ -219,32 +239,10 @@ void Application2D::shutdown()
 
 void Application2D::update(float _deltaTime) {
 
-	//if (m_increasePower && m_power < m_powerMax)
-	//{
-	//	m_power += ExponentialEaseIn(m_physicsScene->GetTimeStep(), 0, m_powerMax * 10);
-	//}
-	//else if(m_power >= 0)
-	//{
-	//	m_increasePower = false;
-	//	m_power -= ExponentialEaseIn(_deltaTime, 0, m_powerMax*10);
-
-	//}
-	//else
-	//{
-	//	m_increasePower = true;
-	//}
-
-
 	aie::Input* input = aie::Input::getInstance();
-
-	
 
 	aie::Gizmos::clear();
 	m_physicsScene->Draw();
-
-	/*aie::Gizmos::add2DCircle(glm::vec2(-m_extents, 0), m_powerMax*2, 25, glm::vec4(1, 1, 1, 0));
-	aie::Gizmos::add2DCircle(glm::vec2(-m_extents, 0), m_power * 2, 25, glm::vec4(1, 1, 1, 1));*/
-
 	
 	if (m_cueBall->GetVelocity() == glm::vec2(0))
 	{
@@ -285,8 +283,13 @@ void Application2D::draw() {
 	// begin drawing sprites
 	m_2dRenderer->begin();
 	m_2dRenderer->drawSprite(m_tableTexture, getWindowWidth()/2 - 5.5f, getWindowHeight()/2, (getWindowWidth() / m_aspectRatio) * 1.5, (getWindowHeight() / m_aspectRatio)*1.5, 3.14159265, 1);
-
-	
+	int ballIndex = 0;
+	for each (auto ball in m_balls)
+	{
+		glm::vec2 pos = WorldToScreen(ball->GetPosition());
+		float scale = 13.0f;
+		m_2dRenderer->drawSprite(ball->GetTexture(), pos.x,pos.y, ball->GetRadius()*scale, ball->GetRadius()*scale,0, 1);
+	}
 
 
 	
@@ -297,8 +300,9 @@ void Application2D::draw() {
 
 	// done drawing sprites
 	m_2dRenderer->end();
+	//aie::Gizmos::draw2D(glm::ortho<float>(-m_extents, m_extents, -m_extents / m_aspectRatio, m_extents / m_aspectRatio, -1.f, 1.f));
 
-	aie::Gizmos::draw2D(glm::ortho<float>(-m_extents, m_extents,-m_extents / m_aspectRatio, m_extents / m_aspectRatio, -1.f, 1.f));
+
 }
 
 float Application2D::ExponentialEaseIn(float _time, float _start, float _end)
@@ -329,12 +333,17 @@ glm::vec2 Application2D::WorldToScreen(glm::vec2 _worldPos)
 	glm::vec2 screenPos = _worldPos;
 
 
-	/*screenPos.x /= 2.0f;
+	screenPos.x /= 2.0f;
+	screenPos.x /= m_extents;
+	screenPos.x *= getWindowWidth();
+	
 	screenPos.y /= 2.0f;
+	screenPos.y /= m_extents;
+	screenPos.y *= (m_aspectRatio * getWindowHeight());
 
 
 	screenPos.x += getWindowWidth() / 2;
-	screenPos.y += getWindowHeight() / 2;*/
+	screenPos.y += getWindowHeight() / 2;
 
 
 	return screenPos;
