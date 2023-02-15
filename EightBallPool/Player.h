@@ -9,7 +9,7 @@ public:
 	// Getters
 	int GetBallsSunk() { return m_ballsSunk; }
 	BallType GetOwnedBallType() { return m_ownedBallType; }
-	bool OwnsBallType() { return m_ownedBallType != Unowned; }
+	bool OwnsBallType() { return m_ownedBallType != UNOWNED; }
 	Player* GetOpponent() { return m_opponent; }
 
 	// Setters
@@ -19,8 +19,8 @@ public:
 	void SetOpponent(Player* _player) {m_opponent = _player; }
 
 protected:
-	int m_ballsSunk;
-	BallType m_ownedBallType;
+	int m_ballsSunk = 0;
+	BallType m_ownedBallType = UNOWNED;
 	Player* m_opponent;
 
 

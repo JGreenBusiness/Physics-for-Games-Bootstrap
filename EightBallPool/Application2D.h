@@ -14,9 +14,10 @@
 
 enum GamePhase
 {
-	Start,
-	Play,
-	Over
+	START,
+	PLAY,
+	FOUL,
+	OVER
 };
 class Application2D : public aie::Application {
 public:
@@ -33,6 +34,7 @@ public:
 
 protected:
 	void ShootBall(aie::Input* _input, glm::vec2 _mousWorldPos);
+	void PlaceCueBall(glm::vec2 _extents, glm::vec2 _mousWorldPos, float _xOrigin);
 	float ExponentialEaseIn(float _time, float _start, float _end);
 	glm::vec2 ScreenToWorld(glm::vec2 _screenPos);
 	glm::vec2 WorldToScreen(glm::vec2 _screenPos);
@@ -52,7 +54,9 @@ protected:
 	bool m_increasePower;
 
 	PoolBall* m_cueBall;
+	glm::vec2 m_cueBallStartPos;
 	bool m_cueBallPlaced;
+
 	std::list<PoolBall*> m_balls;
 	glm::vec2 m_lineEndPos;
 	
@@ -61,6 +65,7 @@ protected:
 	Player* m_player1;
 	Player* m_player2;
 	Player* m_currentPlayer;
+	bool m_ballHit;
 	bool m_switchPlayer;
 	GamePhase m_gamePhase;
 

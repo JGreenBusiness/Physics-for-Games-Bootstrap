@@ -3,11 +3,11 @@
 #include "Texture.h"
 enum BallType
 {
-	Unowned,
-	CueBall,
-	Striped,
-	Solid,
-	BlackBall
+	UNOWNED,
+	CUEBALL,
+	STRIPED,
+	SOLID,
+	BLACKBALL
 };
 
 class PoolBall : public Circle

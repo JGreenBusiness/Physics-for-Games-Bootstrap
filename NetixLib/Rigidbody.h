@@ -45,7 +45,7 @@ public:
 	float GetAngularVelocity() { return m_angularVelocity; }
 	bool IsKinematic() { return m_isKinematic; }
 	bool IsTrigger() {return m_isTrigger;}
-	bool getActive() { return m_active; }
+	bool GetActive() { return m_active; }
 	void ResetPosition() { m_position = glm::vec2(0); }
 
 	// Setters
