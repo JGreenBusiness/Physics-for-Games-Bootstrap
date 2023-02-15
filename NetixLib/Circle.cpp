@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "Circle.h"
 #include "Gizmos.h"
 Circle::Circle(glm::vec2 _position, glm::vec2 _velocity, float _mass, float _radius, glm::vec4 _colour) :

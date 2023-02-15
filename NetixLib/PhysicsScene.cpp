@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "PhysicsScene.h"
 
 #include "PhysicsObject.h"

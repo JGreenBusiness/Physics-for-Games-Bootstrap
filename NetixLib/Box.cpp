@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "Box.h"
 #include "Gizmos.h"
 

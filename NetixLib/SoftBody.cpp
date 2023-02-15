@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "SoftBody.h"
 #include "Circle.h"
 #include "Spring.h"

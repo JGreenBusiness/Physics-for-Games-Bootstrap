@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "Rigidbody.h"
 #include <iostream>
 Rigidbody::Rigidbody(ShapeType _shapeID, glm::vec2 _position, glm::vec2 _velocity, float _orientation, float _mass) :
