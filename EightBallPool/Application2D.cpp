@@ -29,8 +29,9 @@ bool Application2D::startup() {
 	m_player2 = new Player();
 	m_player1->SetOpponent(m_player2);
 	m_player2->SetOpponent(m_player1);
-
-	m_currentPlayer = m_player2;
+	m_currentPlayer = m_player1;
+	m_switchPlayer = false;
+	m_gameOver = false;
 
 	m_physicsScene = new PhysicsScene();
 	m_physicsScene->SetGravity(glm::vec2(0));
@@ -44,37 +45,46 @@ bool Application2D::startup() {
 	glm::vec2 tableExtents = glm::vec2(75.0f, 38.0f);
 
 	const int RACK_SIZE = 6;
-	PoolBall* rack[RACK_SIZE];
+	int ballOrder[15]{ 1,11,3,13,8,4,7,5,6,14,10,12,15,9,2};
 	float radius = 1.8f;
-	int ballNum = 1;
-	std::vector<glm::vec2> ballPosList;
+	int ballIndex = 0;
+
+	std::vector<glm::vec2> ballPositions;
 	for (int i = 1; i < RACK_SIZE; i++)
 	{
 		for (int j = 0; j < i; j++)
 		{
-			glm::vec2 ballpos = glm::vec2(i * (radius * 2), radius + ((radius * 2) * j) -(i* (radius)));
-			
-			rack[i] = new PoolBall(glm::vec2(ballpos.x, ballpos.y), .7f, radius, ballNum);
-			m_balls.push_back(rack[i]);
-			ballNum++;
-			m_physicsScene->AddActor(rack[i]);
+			glm::vec2 ballPos = glm::vec2(i * (radius * 2), radius + ((radius * 2) * j) -(i* (radius)));
+			ballPositions.push_back(ballPos);
 		}
 	}
+
+	for(auto pos : ballPositions)
+	{
+		PoolBall* ball = new PoolBall(glm::vec2(pos.x, pos.y), .7f, radius, ballOrder[ballIndex]);
+		ballIndex++;
+		m_balls.push_back(ball);
+		m_physicsScene->AddActor(ball);
+	}
+
+
 
 	//-----------------------------------------------------------
 	
 	// Ball Texture Assignment
 	//-----------------------------------------------------------
-	ballNum = 0;
+	ballIndex = 0;
 	for (auto ball : m_balls)
 	{
+		
 		std::string fileName = "./textures/ball_";
-		fileName += std::to_string(ballNum);
+		
+		fileName += std::to_string(ball->GetBallNum());
 		fileName += ".png";
 
 		aie::Texture* ballTexture = new aie::Texture(fileName.c_str());
 		ball->SetTexture(ballTexture);
-		ballNum++;
+		ballIndex++;
 	}
 
 	//-----------------------------------------------------------
@@ -196,16 +206,17 @@ bool Application2D::startup() {
 		{
 			PoolBall* ball = dynamic_cast<PoolBall*>(_other);
 
-			ball->ResetPosition();
+			ball->SetPosition(glm::vec2(-30.0f, 0.0f));
 			ball->SetActive(false);
 			
+			if (ball->GetType() == BallType::BlackBall && m_currentPlayer->GetBallsSunk() != 7)
+			{
+				m_gameOver = true;
+				m_currentPlayer = m_currentPlayer->GetOpponent();
+			}
 
 			if (!m_currentPlayer->OwnsBallType())
 			{
-				if (ball->GetType() == BallType::CueBall || ball->GetType() == BallType::BlackBall)
-					return;
-
-
 				m_currentPlayer->SetOwnedBallType(ball->GetType());
 				m_currentPlayer->AddSunkBall();
 			}
@@ -242,6 +253,15 @@ void Application2D::shutdown()
 		m_player2 = nullptr;
 		delete m_player2;
 	}	
+
+	for (auto ball : m_balls)
+	{
+		if (ball->GetTexture())
+		{
+			delete ball->GetTexture();
+			ball->SetTexture(nullptr);
+		}
+	}
 }
 
 void Application2D::update(float _deltaTime) {
@@ -268,14 +288,18 @@ void Application2D::update(float _deltaTime) {
 		//aie::Gizmos::add2DLine(m_cueBall->GetPosition(),m_lineEndPos, glm::vec4(1));
 		m_lineEndPos = WorldToScreen(m_lineEndPos);
 
-
+		if (m_cueBall->GetVelocity()==glm::vec2(0) && m_switchPlayer)
+		{
+			m_currentPlayer = m_currentPlayer->GetOpponent();
+			m_switchPlayer = false;
+		}
 
 		if (input->wasKeyPressed(aie::INPUT_KEY_SPACE))
 		{
 			glm::dot(worldPos, m_cueBall->GetPosition());
 			m_cueBall->ApplyForce(-dir * (m_power), dir * (m_cueBall->GetRadius()));
 
-			m_currentPlayer = m_currentPlayer->GetOpponent();
+			m_switchPlayer = true;
 		}
 	}
 
@@ -291,44 +315,54 @@ void Application2D::draw() {
 	// begin drawing sprites
 	m_2dRenderer->begin();
 	m_2dRenderer->drawSprite(m_tableTexture, getWindowWidth()/2 - 5.5f, getWindowHeight()/2, (getWindowWidth() / m_aspectRatio) * 1.5, (getWindowHeight() / m_aspectRatio)*1.5, 3.14159265, 1);
-	int ballIndex = 0;
-	for each (auto ball in m_balls)
+	
+	if (!m_gameOver)
 	{
-		if(ball->getActive())
+		int ballIndex = 0;
+		for (auto ball : m_balls)
 		{
-			glm::vec2 pos = WorldToScreen(ball->GetPosition());
-			float scale = 13.0f;
-			m_2dRenderer->drawSprite(ball->GetTexture(), pos.x,pos.y, ball->GetRadius()*scale, ball->GetRadius()*scale,0, 1);
+			if (ball->getActive())
+			{
+				glm::vec2 pos = WorldToScreen(ball->GetPosition());
+				float scale = 13.0f;
+				m_2dRenderer->drawSprite(ball->GetTexture(), pos.x, pos.y, ball->GetRadius() * scale, ball->GetRadius() * scale, 0, 1);
+			}
 		}
-	}
 
-	if(m_cueBall->GetVelocity() == glm::vec2(0))
+		if (m_cueBall->GetVelocity() == glm::vec2(0))
+		{
+			glm::vec2 cueBallPos = WorldToScreen(m_cueBall->GetPosition());
+			m_2dRenderer->drawLine(cueBallPos.x, cueBallPos.y, m_lineEndPos.x, m_lineEndPos.y, 1);
+
+			std::string turnText;
+			m_currentPlayer == m_player1 ? turnText = "Player 2" : turnText = "Player 1";
+			turnText += "'s Turn";
+			m_2dRenderer->drawText(m_font, turnText.c_str(), 0, 16);
+		}
+
+		std::string p1Text = "Player 1: ";
+		std::string p2Text = "Player 2: ";
+
+
+		if (m_currentPlayer->OwnsBallType())
+		{
+			m_player1->GetOwnedBallType() == Striped ? p1Text += "Striped " : p1Text += "Solid ";
+			m_player2->GetOwnedBallType() == Striped ? p2Text += "Striped " : p2Text += "Solid ";
+
+			p1Text += std::to_string(m_player1->GetBallsSunk());
+			p2Text += std::to_string(m_player2->GetBallsSunk());
+		}
+		m_2dRenderer->drawText(m_font, p1Text.c_str(), 0, getWindowHeight() - 32);
+		m_2dRenderer->drawText(m_font, p2Text.c_str(), getWindowWidth() / 2, getWindowHeight() - 32);
+	}
+	else
 	{
-		glm::vec2 cueBallPos = WorldToScreen(m_cueBall->GetPosition());
-		m_2dRenderer->drawLine(cueBallPos.x,cueBallPos.y,m_lineEndPos.x,m_lineEndPos.y,1);
-
-		std::string turnText;
-		m_currentPlayer == m_player1 ? turnText = "Player 2" : turnText = "Player 1";
-		turnText += "'s Turn";
-		m_2dRenderer->drawText(m_font,  turnText.c_str(),0 , 16);
-	}
-
-
-	std::string p1Text = "Player 1 Sunk: ";
-	std::string p2Text = "Player 2 Sunk: ";
-
-	
-	if(m_currentPlayer->OwnsBallType())
-	{
-		m_player1->GetOwnedBallType() == Striped ? p1Text += "Striped " : p1Text += "Solid " ;
-		m_player2->GetOwnedBallType() == Striped ? p2Text += "Striped " : p2Text += "Solid " ;
-
-		p1Text += std::to_string(m_player1->GetBallsSunk());
-		p2Text += std::to_string(m_player2->GetBallsSunk());
+		std::string winner = "Winner :";
+		m_currentPlayer == m_player1 ? winner += "Player 1" : winner += "Player 2";
+		m_2dRenderer->drawText(m_font, winner.c_str(), getWindowWidth()/2, getWindowHeight() / 2);
 	}
 	
-	m_2dRenderer->drawText(m_font, p1Text.c_str(), 0, getWindowHeight() - 32);
-	m_2dRenderer->drawText(m_font, p2Text.c_str(), getWindowWidth()/2, getWindowHeight() - 32);
+	
 
 	
 

@@ -51,4 +51,6 @@ protected:
 	Player* m_player1;
 	Player* m_player2;
 	Player* m_currentPlayer;
+	bool m_switchPlayer;
+	bool m_gameOver;
 };

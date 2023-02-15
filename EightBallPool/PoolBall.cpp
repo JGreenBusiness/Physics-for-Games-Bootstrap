@@ -4,7 +4,7 @@
 PoolBall::PoolBall(glm::vec2 _position, float _mass, float _radius, int _ballNum) : Circle(_position,glm::vec2(0), _mass, _radius, glm::vec4(1))
 {
 	m_ballNum = _ballNum;
-
+	m_texture = nullptr;
 	m_ballType = Solid;
 	switch (m_ballNum)
 	{
@@ -69,6 +69,7 @@ PoolBall::PoolBall(glm::vec2 _position, float _mass, float _radius, int _ballNum
 		break;
 	case 8:
 		m_colour = glm::vec4(0,0, 0, 1); // Black
+		m_ballType = BlackBall;
 		break;
 	default:
 		m_colour = glm::vec4(1, 1, 1, 1); // White
