@@ -1,18 +1,20 @@
 #include "Application2D.h"
 #include "Texture.h"
 #include "Font.h"
-#include "Input.h"
 #include "Box.h"
 #include "Plane.h"
 #include "Gizmos.h"
 #include "Circle.h"
 #include <iostream>
 #include "PoolBall.h"
-Application2D::Application2D() {
+Application2D::Application2D() 
+{
+	
 
 }
 
-Application2D::~Application2D() {
+Application2D::~Application2D() 
+{
 
 }
 
@@ -24,6 +26,11 @@ bool Application2D::startup() {
 	m_font = new aie::Font("./font/consolas.ttf", 32);
 	m_tableTexture = new aie::Texture("./textures/table.png");
 
+	m_powerMax = 4.0f;
+	m_power = 0.0f;
+	m_increasePower = true;
+	m_lineEndPos = glm::vec2(0);
+	m_switchPlayer = false;
 
 	m_player1 = new Player();
 	m_player2 = new Player();
@@ -31,18 +38,21 @@ bool Application2D::startup() {
 	m_player2->SetOpponent(m_player1);
 	m_currentPlayer = m_player1;
 	m_switchPlayer = false;
-	m_gameOver = false;
+	m_gamePhase = GamePhase::Start;
+	m_cueBallPlaced = false;
 
 	m_physicsScene = new PhysicsScene();
 	m_physicsScene->SetGravity(glm::vec2(0));
 	
-	m_cueBall = new PoolBall(glm::vec2(-30, 0), .7f, 1.5f,0);
-	m_balls.push_back(m_cueBall);
+	
 
 
 	// Ball Spawning Logic 
 	//-----------------------------------------------------------
-	glm::vec2 tableExtents = glm::vec2(75.0f, 38.0f);
+	m_tableExtents = glm::vec2(75.0f, 38.0f);
+
+	m_cueBall = new PoolBall(glm::vec2(-m_tableExtents.x/1.8, 0), .7f, 1.5f, 0);
+	m_balls.push_back(m_cueBall);
 
 	const int RACK_SIZE = 6;
 	int ballOrder[15]{ 1,11,3,13,8,4,7,5,6,14,10,12,15,9,2};
@@ -95,12 +105,12 @@ bool Application2D::startup() {
 	//-----------------------------------------------------------
 	float boxSize = radius;
 
-	Box* boxes[6];
+	Box* boxes[6] = {};
 	glm::vec4 boxColour = glm::vec4(0, 1, 0, .8f);
-	float width = tableExtents.x * 2;
-	float height = tableExtents.y * 2;
+	float width = m_tableExtents.x * 2;
+	float height = m_tableExtents.y * 2;
 
-	Circle* holes[6];
+	Circle* holes[6] = {};
 	int holeIndex = 0;
 	float holeRadius = radius * 2;
 	glm::vec4 holeColour = glm::vec4(0, 0, 0, .8f);
@@ -110,23 +120,23 @@ bool Application2D::startup() {
 	{
 		float dist = i * width;
 		int index = i + 2;
-		boxes[index] = new Box(glm::vec2(-tableExtents.x + dist, 0), glm::vec2(0), 0, 1, glm::vec2(boxSize, tableExtents.y - boxSize*4), boxColour);
+		boxes[index] = new Box(glm::vec2(-m_tableExtents.x + dist, 0), glm::vec2(0), 0, 1, glm::vec2(boxSize, m_tableExtents.y - boxSize*4), boxColour);
 
 		Circle* boxCap;
 		for (int j = 0; j < 2; j++)
 		{
 			float h;
 			float s;
-			j % 2 == 0 ? h = -tableExtents.y : h = tableExtents.y;
+			j % 2 == 0 ? h = -m_tableExtents.y : h = m_tableExtents.y;
 			j % 2 == 0 ? s = -boxSize * 4 : s = boxSize * 4;
 
-			boxCap = new Circle(glm::vec2(-tableExtents.x + dist, h - s ), glm::vec2(0), 1, boxSize, boxColour);
+			boxCap = new Circle(glm::vec2(-m_tableExtents.x + dist, h - s ), glm::vec2(0), 1, boxSize, boxColour);
 			boxCap->SetKinematic(true);
 			m_physicsScene->AddActor(boxCap);
 
 
 
-			holes[holeIndex] = new Circle(glm::vec2(-tableExtents.x + dist, h), glm::vec2(0), 1, holeRadius, holeColour);
+			holes[holeIndex] = new Circle(glm::vec2(-m_tableExtents.x + dist, h), glm::vec2(0), 1, holeRadius, holeColour);
 			holeIndex++;
 		}
 
@@ -141,23 +151,23 @@ bool Application2D::startup() {
 		float dist = i * width/2;
 
 		int index = i + 4;
-		boxes[index] = new Box(glm::vec2(tableExtents.x/2 - dist, tableExtents.y), glm::vec2(0), 0, 1, glm::vec2(tableExtents.x/2 - boxSize * 4, boxSize), boxColour);
+		boxes[index] = new Box(glm::vec2(m_tableExtents.x/2 - dist, m_tableExtents.y), glm::vec2(0), 0, 1, glm::vec2(m_tableExtents.x/2 - boxSize * 4, boxSize), boxColour);
 
 		Circle* boxCap;
 		for (int j = 0; j < 2; j++)
 		{
 			float w;
 			float s;
-			j % 2 == 0 ? w = -tableExtents.x/2 : w = tableExtents.x/2;
+			j % 2 == 0 ? w = -m_tableExtents.x/2 : w = m_tableExtents.x/2;
 			j % 2 == 0 ? s = -boxSize * 4 : s = boxSize * 4;
 
-			boxCap = new Circle(glm::vec2(tableExtents.x / 2 + w - s - dist, tableExtents.y), glm::vec2(0), 1, boxSize, boxColour);
+			boxCap = new Circle(glm::vec2(m_tableExtents.x / 2 + w - s - dist, m_tableExtents.y), glm::vec2(0), 1, boxSize, boxColour);
 			boxCap->SetKinematic(true);
 			m_physicsScene->AddActor(boxCap);
 
 			if (j < 1 && i ==0)
 			{
-				holes[holeIndex] = new Circle(glm::vec2(tableExtents.x / 2 + w - dist, tableExtents.y + holeRadius), glm::vec2(0), 1, holeRadius, holeColour);
+				holes[holeIndex] = new Circle(glm::vec2(m_tableExtents.x / 2 + w - dist, m_tableExtents.y + holeRadius), glm::vec2(0), 1, holeRadius, holeColour);
 				holeIndex++;
 			}
 		}
@@ -170,23 +180,23 @@ bool Application2D::startup() {
 	{
 		float dist = i * width/2;
 
-		boxes[i] = new Box(glm::vec2(tableExtents.x/2 - dist, -tableExtents.y), glm::vec2(0), 0, 1, glm::vec2(tableExtents.x/2 - boxSize * 4, boxSize), boxColour);
+		boxes[i] = new Box(glm::vec2(m_tableExtents.x/2 - dist, -m_tableExtents.y), glm::vec2(0), 0, 1, glm::vec2(m_tableExtents.x/2 - boxSize * 4, boxSize), boxColour);
 
 		Circle* boxCap;
 		for (int j = 0; j < 2; j++)
 		{
 			float w;
 			float s;
-			j % 2 == 0 ? w = -tableExtents.x/2 : w = tableExtents.x/2;
+			j % 2 == 0 ? w = -m_tableExtents.x/2 : w = m_tableExtents.x/2;
 			j % 2 == 0 ? s = -boxSize * 4 : s = boxSize * 4;
 
-			boxCap = new Circle(glm::vec2(tableExtents.x / 2 + w - s - dist, -tableExtents.y), glm::vec2(0), 1, boxSize, boxColour);
+			boxCap = new Circle(glm::vec2(m_tableExtents.x / 2 + w - s - dist, -m_tableExtents.y), glm::vec2(0), 1, boxSize, boxColour);
 			boxCap->SetKinematic(true);
 			m_physicsScene->AddActor(boxCap);
 
 			if (j < 1 && i == 0)
 			{
-				holes[holeIndex] = new Circle(glm::vec2(tableExtents.x / 2 + w - dist, -tableExtents.y - holeRadius), glm::vec2(0), 1, holeRadius, holeColour);
+				holes[holeIndex] = new Circle(glm::vec2(m_tableExtents.x / 2 + w - dist, -m_tableExtents.y - holeRadius), glm::vec2(0), 1, holeRadius, holeColour);
 				holeIndex++;
 			}
 		}
@@ -207,11 +217,11 @@ bool Application2D::startup() {
 			PoolBall* ball = dynamic_cast<PoolBall*>(_other);
 
 			ball->SetPosition(glm::vec2(-30.0f, 0.0f));
-			ball->SetActive(false);
+			//ball->SetActive(false);
 			
 			if (ball->GetType() == BallType::BlackBall && m_currentPlayer->GetBallsSunk() != 7)
 			{
-				m_gameOver = true;
+				m_gamePhase = GamePhase::Over;
 				m_currentPlayer = m_currentPlayer->GetOpponent();
 			}
 
@@ -270,41 +280,79 @@ void Application2D::update(float _deltaTime) {
 
 	aie::Gizmos::clear();
 	m_physicsScene->Draw();
-	
-	if (m_cueBall->GetVelocity() == glm::vec2(0))
+
+	// Gets players mouse pos and translates from screen to world pos
+	int xScreen, yScreen;
+	input->getMouseXY(&xScreen, &yScreen);
+	glm::vec2 mWorldPos = ScreenToWorld(glm::vec2(xScreen, yScreen));
+
+	// Start of game logic
+	if (m_gamePhase == GamePhase::Start)
 	{
-		int xScreen, yScreen;
-		input->getMouseXY(&xScreen, &yScreen);
-		glm::vec2 worldPos = ScreenToWorld(glm::vec2(xScreen, yScreen));
-		glm::vec2 dir = glm::normalize(worldPos - m_cueBall->GetPosition());
+		if (!m_cueBallPlaced)
+		{
+			//Logic for cue ball placing at start
+			glm::vec2 pos = glm::vec2(m_cueBall->GetPosition().x, mWorldPos.y);
+			float top = m_tableExtents.y - m_cueBall->GetRadius() * 2;
+			float bot = -m_tableExtents.y + m_cueBall->GetRadius() * 2;
 
+			// position cant be above or below table extence
+			pos.y > top ? pos.y = top :
+				pos.y < bot ? pos.y = bot
+				: pos.y = pos.y;
 
-		float dist = glm::distance(m_cueBall->GetPosition(), worldPos);
-		float distCap = 50;
-		dist > distCap ? m_power = distCap * 2, dist = distCap : m_power = dist * 2;
+			m_cueBall->SetPosition(pos);
 
-
-		m_lineEndPos = m_cueBall->GetPosition() - (dir * glm::vec2(dist));
-		//aie::Gizmos::add2DLine(m_cueBall->GetPosition(),m_lineEndPos, glm::vec4(1));
-		m_lineEndPos = WorldToScreen(m_lineEndPos);
-
-		if (m_cueBall->GetVelocity()==glm::vec2(0) && m_switchPlayer)
+			if (input->wasMouseButtonPressed(aie::INPUT_MOUSE_BUTTON_LEFT))
+			{
+				m_cueBallPlaced = true;
+			}
+		}
+		else
+		{
+			ShootBall(input, mWorldPos);
+			m_gamePhase = GamePhase::Play;
+		}
+	}
+	else if(m_gamePhase == GamePhase::Play && m_cueBall->GetVelocity() == glm::vec2(0))
+	{
+		// Switch Current Player
+		if (m_cueBall->GetVelocity() == glm::vec2(0) && m_switchPlayer && m_cueBallPlaced)
 		{
 			m_currentPlayer = m_currentPlayer->GetOpponent();
 			m_switchPlayer = false;
 		}
 
-		if (input->wasKeyPressed(aie::INPUT_KEY_SPACE))
-		{
-			glm::dot(worldPos, m_cueBall->GetPosition());
-			m_cueBall->ApplyForce(-dir * (m_power), dir * (m_cueBall->GetRadius()));
+		ShootBall(input, mWorldPos);
 
-			m_switchPlayer = true;
-		}
 	}
+
+	
 
 	m_physicsScene->Update(_deltaTime);
 
+}
+
+/// <summary>Takes player input to shoot pool ball</summary><
+void Application2D::ShootBall(aie::Input* _input,glm::vec2 _mousWorldPos)
+{
+	// Logic for power and distence from ball to mouse
+	glm::vec2 dir = glm::normalize(_mousWorldPos - m_cueBall->GetPosition());
+	float dist = glm::distance(m_cueBall->GetPosition(), _mousWorldPos);
+	float distCap = 50;
+	dist > distCap ? m_power = distCap * 2, dist = distCap : m_power = dist * 2;
+
+	m_lineEndPos = m_cueBall->GetPosition() - (dir * glm::vec2(dist));
+	m_lineEndPos = WorldToScreen(m_lineEndPos);
+
+	// Player shot ball
+	if (_input->wasMouseButtonPressed(aie::INPUT_MOUSE_BUTTON_LEFT))
+	{
+		glm::dot(_mousWorldPos, m_cueBall->GetPosition());
+		m_cueBall->ApplyForce(-dir * (m_power), dir * (m_cueBall->GetRadius()));
+
+		m_switchPlayer = true;
+	}
 }
 
 void Application2D::draw() {
@@ -316,7 +364,13 @@ void Application2D::draw() {
 	m_2dRenderer->begin();
 	m_2dRenderer->drawSprite(m_tableTexture, getWindowWidth()/2 - 5.5f, getWindowHeight()/2, (getWindowWidth() / m_aspectRatio) * 1.5, (getWindowHeight() / m_aspectRatio)*1.5, 3.14159265, 1);
 	
-	if (!m_gameOver)
+	if (m_gamePhase == GamePhase::Over)
+	{
+		std::string winner = "Winner :";
+		m_currentPlayer == m_player1 ? winner += "Player 1" : winner += "Player 2";
+		m_2dRenderer->drawText(m_font, winner.c_str(), getWindowWidth() / 2, getWindowHeight() / 2);
+	}
+	else
 	{
 		int ballIndex = 0;
 		for (auto ball : m_balls)
@@ -329,16 +383,16 @@ void Application2D::draw() {
 			}
 		}
 
-		if (m_cueBall->GetVelocity() == glm::vec2(0))
+		if (m_cueBall->GetVelocity() == glm::vec2(0) && m_gamePhase == GamePhase::Play)
 		{
 			glm::vec2 cueBallPos = WorldToScreen(m_cueBall->GetPosition());
 			m_2dRenderer->drawLine(cueBallPos.x, cueBallPos.y, m_lineEndPos.x, m_lineEndPos.y, 1);
-
-			std::string turnText;
-			m_currentPlayer == m_player1 ? turnText = "Player 2" : turnText = "Player 1";
-			turnText += "'s Turn";
-			m_2dRenderer->drawText(m_font, turnText.c_str(), 0, 16);
 		}
+
+		std::string turnText;
+		m_currentPlayer == m_player1 ? turnText = "Player 1" : turnText = "Player 2";
+		turnText += "'s Turn";
+		m_2dRenderer->drawText(m_font, turnText.c_str(), 0, 16);
 
 		std::string p1Text = "Player 1: ";
 		std::string p2Text = "Player 2: ";
@@ -354,12 +408,6 @@ void Application2D::draw() {
 		}
 		m_2dRenderer->drawText(m_font, p1Text.c_str(), 0, getWindowHeight() - 32);
 		m_2dRenderer->drawText(m_font, p2Text.c_str(), getWindowWidth() / 2, getWindowHeight() - 32);
-	}
-	else
-	{
-		std::string winner = "Winner :";
-		m_currentPlayer == m_player1 ? winner += "Player 1" : winner += "Player 2";
-		m_2dRenderer->drawText(m_font, winner.c_str(), getWindowWidth()/2, getWindowHeight() / 2);
 	}
 	
 	

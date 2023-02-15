@@ -9,7 +9,15 @@
 #include <string>
 #include <Texture.h>
 #include "Player.h"
+#include "Input.h"
 
+
+enum GamePhase
+{
+	Start,
+	Play,
+	Over
+};
 class Application2D : public aie::Application {
 public:
 
@@ -24,6 +32,7 @@ public:
 
 
 protected:
+	void ShootBall(aie::Input* _input, glm::vec2 _mousWorldPos);
 	float ExponentialEaseIn(float _time, float _start, float _end);
 	glm::vec2 ScreenToWorld(glm::vec2 _screenPos);
 	glm::vec2 WorldToScreen(glm::vec2 _screenPos);
@@ -38,11 +47,12 @@ protected:
 	const float m_extents = 100;
 	const float m_aspectRatio = 16.0f / 9.0f;
 
-	float m_powerMax = 4.0f;
-	float m_power = 0.0f;
-	bool m_increasePower = true;
+	float m_powerMax;
+	float m_power;
+	bool m_increasePower;
 
 	PoolBall* m_cueBall;
+	bool m_cueBallPlaced;
 	std::list<PoolBall*> m_balls;
 	glm::vec2 m_lineEndPos;
 	
@@ -52,5 +62,7 @@ protected:
 	Player* m_player2;
 	Player* m_currentPlayer;
 	bool m_switchPlayer;
-	bool m_gameOver;
+	GamePhase m_gamePhase;
+
+	glm::vec2 m_tableExtents;
 };
