@@ -67,22 +67,22 @@ protected:
 	glm::vec2 m_lastPosition = glm::vec2(0);
 	glm::vec2 m_velocity = glm::vec2(0);
 
-	float m_mass = 0;
-	float m_orientation = 0;
-	float m_angularVelocity = 0;
-	float m_moment = 0;
+	float m_mass;
+	float m_orientation;
+	float m_angularVelocity;
+	float m_moment;
 
-	float m_lastOrientation = 0;
+	float m_lastOrientation;
 
-	glm::vec2 m_smoothedPosition = glm::vec2(0);
-	glm::vec2 m_smoothedLocalX = glm::vec2(0);
-	glm::vec2 m_smoothedLocalY = glm::vec2(0);
+	glm::vec2 m_smoothedPosition;
+	glm::vec2 m_smoothedLocalX;
+	glm::vec2 m_smoothedLocalY;
 
-	glm::vec2 m_localX = glm::vec2(0);
-	glm::vec2 m_localY = glm::vec2(0);
+	glm::vec2 m_localX;
+	glm::vec2 m_localY;
 
-	float m_linearDrag =.3f;
-	float m_angularDrag = .3f;
+	float m_linearDrag;
+	float m_angularDrag;
 
 	bool m_isKinematic;
 

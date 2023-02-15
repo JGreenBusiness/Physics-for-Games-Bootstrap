@@ -9,6 +9,22 @@ Rigidbody::Rigidbody(ShapeType _shapeID, glm::vec2 _position, glm::vec2 _velocit
 	m_orientation = _orientation;
 	m_isKinematic = false;
 	m_isTrigger = false;
+
+	m_smoothedPosition = glm::vec2(0);
+	m_smoothedLocalX = glm::vec2(0);
+	m_smoothedLocalY = glm::vec2(0);
+
+	m_lastOrientation = 0;
+
+	m_angularVelocity = 0;
+	m_moment = 0;
+
+	m_localX = glm::vec2(0);
+	m_localY = glm::vec2(0);
+
+	m_linearDrag = .3f;
+	m_angularDrag = .3f;
+
 }
 
 Rigidbody::~Rigidbody()
