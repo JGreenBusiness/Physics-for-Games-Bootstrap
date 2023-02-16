@@ -68,6 +68,7 @@ protected:
 	Player* m_player2;
 	Player* m_currentPlayer;
 	bool m_ballHit;
+	bool m_opponentBallSunk;
 	bool m_ballsStill;
 	bool m_switchPlayer;
 	GamePhase m_gamePhase;

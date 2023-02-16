@@ -33,6 +33,7 @@ bool Application2D::startup() {
 	m_lineEndPos = glm::vec2(0);
 	m_switchPlayer = false;
 	m_ballHit = false;
+	m_opponentBallSunk = false;
 
 	m_player1 = new Player();
 	m_player2 = new Player();
@@ -219,15 +220,16 @@ bool Application2D::startup() {
 		{
 			PoolBall* ball = dynamic_cast<PoolBall*>(_other);
 
-			if (ball->GetType() == BallType::BLACKBALL && m_currentPlayer->GetBallsSunk() != 7)
+			if(ball->GetType() == BallType::BLACKBALL)
 			{
+				if(m_currentPlayer->GetBallsSunk() != 7)
+				{
+					m_currentPlayer = m_currentPlayer->GetOpponent();
+				}
 				m_gamePhase = GamePhase::OVER;
-				m_currentPlayer = m_currentPlayer->GetOpponent();
 			}
-			
-			
 
-			// Player Has not been assigned a poolball type
+			// Player Has not been assigned a poolBall type
 			if (!m_currentPlayer->OwnsBallType())
 			{
 				if (ball == m_cueBall)
@@ -241,6 +243,7 @@ bool Application2D::startup() {
 				{
 					m_currentPlayer->SetOwnedBallType(ball->GetType());
 					m_currentPlayer->AddSunkBall();
+					m_switchPlayer = false;
 				}
 			}// Both players have an owned type
 			else
@@ -252,12 +255,20 @@ bool Application2D::startup() {
 				else
 				{
 					// Did current player sink their ball, if not other player's ball must have been sunk
-					m_currentPlayer->GetOwnedBallType() == ball->GetType() ? m_currentPlayer->AddSunkBall() : m_currentPlayer->GetOpponent()->AddSunkBall();
+					if(m_currentPlayer->GetOwnedBallType() == ball->GetType())
+					{
+						m_currentPlayer->AddSunkBall();
+						m_switchPlayer = false;
+					}
+					else
+					{
+						m_currentPlayer->GetOpponent()->AddSunkBall();
+						m_opponentBallSunk = true;
+						m_switchPlayer = true;
+					}
 				}
 				
 			}
-
-			
 			
 			ball->SetPosition(glm::vec2(-m_tableExtents.x - ball->GetRadius() * 4, (ball->GetRadius()*2)* (m_player1->GetBallsSunk() + m_player2->GetBallsSunk())));
 			ball->ResetVelocity();
@@ -284,7 +295,6 @@ bool Application2D::startup() {
 				{
 					CallFoul();
 				}
-
 				m_ballHit = true;
 			}
 		}
@@ -380,17 +390,17 @@ void Application2D::update(float _deltaTime) {
 		//-----------------------------------------------------------	
 		case GamePhase::PLAY:
 			// Switch Current Player
-			if (m_switchPlayer && m_cueBallPlaced)
+			
+			if (m_switchPlayer && m_cueBallPlaced || m_opponentBallSunk)
 			{
 				if (m_ballHit == false)
 				{
 					m_currentPlayer->OwnsBallType() ?  CallFoul(): m_gamePhase = GamePhase::START, 	m_cueBallPlaced = false;
-;
 				}
 				
 				m_currentPlayer = m_currentPlayer->GetOpponent();
 				m_switchPlayer = false;
-				m_ballHit = false;
+				m_opponentBallSunk = false;
 			}
 
 			ShootBall(input, mouseWPos);
