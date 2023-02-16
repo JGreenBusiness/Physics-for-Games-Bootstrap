@@ -219,26 +219,23 @@ bool Application2D::startup() {
 		{
 			PoolBall* ball = dynamic_cast<PoolBall*>(_other);
 
-
 			if (ball->GetType() == BallType::BLACKBALL && m_currentPlayer->GetBallsSunk() != 7)
 			{
 				m_gamePhase = GamePhase::OVER;
 				m_currentPlayer = m_currentPlayer->GetOpponent();
 			}
 			
-			if (ball != m_cueBall)
-			{
-				ball->SetPosition(glm::vec2(-m_tableExtents.x - ball->GetRadius() * 4, ball->GetRadius()* (m_player1->GetBallsSunk() + m_player2->GetBallsSunk())));
-			}
-			ball->ResetVelocity();
+			
 
 			// Player Has not been assigned a poolball type
 			if (!m_currentPlayer->OwnsBallType())
 			{
 				if (ball == m_cueBall)
 				{
-					m_cueBall->SetPosition(m_cueBallStartPos);
+					m_gamePhase = GamePhase::START;
+					m_switchPlayer = true;
 					m_cueBall->ResetVelocity();
+					return;
 				}
 				else
 				{
@@ -250,14 +247,21 @@ bool Application2D::startup() {
 			{
 				if (ball == m_cueBall)
 				{
-					m_gamePhase = GamePhase::FOUL;
+					CallFoul();
 				}
 				else
 				{
 					// Did current player sink their ball, if not other player's ball must have been sunk
 					m_currentPlayer->GetOwnedBallType() == ball->GetType() ? m_currentPlayer->AddSunkBall() : m_currentPlayer->GetOpponent()->AddSunkBall();
 				}
+				
 			}
+
+			
+			
+			ball->SetPosition(glm::vec2(-m_tableExtents.x - ball->GetRadius() * 4, (ball->GetRadius()*2)* (m_player1->GetBallsSunk() + m_player2->GetBallsSunk())));
+			ball->ResetVelocity();
+			
 		};
 		
 		m_physicsScene->AddActor(holes[i]);
@@ -278,12 +282,10 @@ bool Application2D::startup() {
 
 				if (m_currentPlayer->GetOwnedBallType() != ball->GetType() && m_currentPlayer->GetOwnedBallType() != BallType::UNOWNED)
 				{
-					m_gamePhase = GamePhase::FOUL;
-					m_cueBallPlaced = false;
+					CallFoul();
 				}
 
 				m_ballHit = true;
-				return;
 			}
 		}
 		
@@ -322,6 +324,10 @@ void Application2D::shutdown()
 	}
 }
 
+bool poolBallMoving(PoolBall* pB)
+{
+	return (pB->GetVelocity() != glm::vec2(0));
+}
 void Application2D::update(float _deltaTime) {
 
 	aie::Input* input = aie::Input::getInstance();
@@ -334,63 +340,95 @@ void Application2D::update(float _deltaTime) {
 	input->getMouseXY(&xScreen, &yScreen);
 	glm::vec2 mouseWPos = ScreenToWorld(glm::vec2(xScreen, yScreen));
 
-	std::cout << m_ballHit << std::endl;
-	// Start of game logic
-	if (m_gamePhase == GamePhase::START)
-	{
-		if (!m_cueBallPlaced)
-		{
-			PlaceCueBall(glm::vec2(0, m_tableExtents.y), mouseWPos,m_cueBallStartPos.x - m_cueBall->GetRadius()*2);
 
-			if (input->wasMouseButtonPressed(aie::INPUT_MOUSE_BUTTON_LEFT))
+	auto movingBall =  std::find_if(m_balls.begin(),m_balls.end(),poolBallMoving);
+	m_ballsStill = movingBall ==  m_balls.end() && !poolBallMoving(m_balls.back());
+	
+	// Start of game logic
+	
+	if(m_ballsStill)
+	{
+		switch(m_gamePhase)
+		{
+			// Start Phase
+		//-----------------------------------------------------------	
+		case GamePhase::START:
+			if (m_switchPlayer)
 			{
+				m_currentPlayer = m_currentPlayer->GetOpponent();
+				m_switchPlayer = false;
+				m_ballHit = false;
+				m_cueBallPlaced = false;
+			}
+			
+			if (!m_cueBallPlaced)
+			{
+				PlaceCueBall(glm::vec2(0, m_tableExtents.y), mouseWPos,m_cueBallStartPos.x - m_cueBall->GetRadius()*2);
+
+				if (input->wasMouseButtonPressed(aie::INPUT_MOUSE_BUTTON_LEFT))
+				{
+					m_cueBallPlaced = true;
+				}
+			}
+			else
+			{
+				m_gamePhase = GamePhase::PLAY;
+			}
+			break;
+		//-----------------------------------------------------------	
+			// Play Phase
+		//-----------------------------------------------------------	
+		case GamePhase::PLAY:
+			// Switch Current Player
+			if (m_switchPlayer && m_cueBallPlaced)
+			{
+				if (m_ballHit == false)
+				{
+					m_currentPlayer->OwnsBallType() ?  CallFoul(): m_gamePhase = GamePhase::START, 	m_cueBallPlaced = false;
+;
+				}
+				
+				m_currentPlayer = m_currentPlayer->GetOpponent();
+				m_switchPlayer = false;
+				m_ballHit = false;
+			}
+
+			ShootBall(input, mouseWPos);
+			break;
+		//-----------------------------------------------------------	
+			// Foul Phase
+		//-----------------------------------------------------------	
+		case GamePhase::FOUL:
+			
+			if (m_switchPlayer)
+			{
+				m_currentPlayer = m_currentPlayer->GetOpponent();
+				m_switchPlayer = false;
+				m_ballHit = false;
+				m_cueBallPlaced = false;
+			}
+			
+			PlaceCueBall(glm::vec2(m_tableExtents.x, m_tableExtents.y), mouseWPos, 0);
+
+			if (input->wasMouseButtonPressed(aie::INPUT_MOUSE_BUTTON_LEFT) && m_cueBall->GetActive())
+			{
+				m_gamePhase = GamePhase::PLAY;
 				m_cueBallPlaced = true;
 			}
-		}
-		else
-		{
-			ShootBall(input, mouseWPos);
-			m_gamePhase = GamePhase::PLAY;
-		}
-	}
-	else if(m_gamePhase == GamePhase::PLAY && m_cueBall->GetVelocity() == glm::vec2(0))
-	{
-		
-
-		// Switch Current Player
-		if (m_cueBall->GetVelocity() == glm::vec2(0) && m_switchPlayer && m_cueBallPlaced)
-		{
-			m_currentPlayer = m_currentPlayer->GetOpponent();
-			m_switchPlayer = false;
-			m_ballHit = false;
-		}
-
-		ShootBall(input, mouseWPos);
-
-		if (m_ballHit == false)
-		{
-			m_gamePhase == GamePhase::FOUL;
-		}
-
-	}
-	else if (m_gamePhase == GamePhase::FOUL && m_cueBall->GetVelocity() == glm::vec2(0))
-	{
-		m_cueBallPlaced = false;
-
-		PlaceCueBall(glm::vec2(m_tableExtents.x, m_tableExtents.y), mouseWPos, 0);
-
-		if (input->wasMouseButtonPressed(aie::INPUT_MOUSE_BUTTON_LEFT) && m_cueBall->GetActive())
-		{
-			ShootBall(input, mouseWPos);
-			m_gamePhase = GamePhase::PLAY;
-			m_cueBallPlaced = true;
+			break;
+			//-----------------------------------------------------------	
+		default: ;
+			std::cout << "ERROR: GamePhaseUnknown" << std::endl;
 		}
 	}
-
 	
-
 	m_physicsScene->Update(_deltaTime);
 
+}
+void Application2D::CallFoul()
+{
+	m_gamePhase = GamePhase::FOUL;
+	m_switchPlayer = true;
 }
 
 /// <summary>Takes player input to shoot pool ball</summary><
@@ -447,7 +485,6 @@ void Application2D::PlaceCueBall(glm::vec2 _extents, glm::vec2 _mousWorldPos, fl
 
 			if (dist <= m_cueBall->GetRadius() + ball->GetRadius())
 			{
-				std::cout << "inside ball" << std::endl;
 				m_cueBall->SetActive(false);
 				break;
 			}
@@ -489,7 +526,7 @@ void Application2D::draw() {
 			}
 		}
 
-		if (m_cueBall->GetVelocity() == glm::vec2(0) && m_gamePhase == GamePhase::PLAY)
+		if (m_ballsStill && m_gamePhase == GamePhase::PLAY)
 		{
 			glm::vec2 cueBallPos = WorldToScreen(m_cueBall->GetPosition());
 			m_2dRenderer->drawLine(cueBallPos.x, cueBallPos.y, m_lineEndPos.x, m_lineEndPos.y, 1);
@@ -506,8 +543,8 @@ void Application2D::draw() {
 
 		if (m_currentPlayer->OwnsBallType())
 		{
-			m_player1->GetOwnedBallType() == STRIPED ? p1Text += "Striped " : p1Text += "Solid ";
-			m_player2->GetOwnedBallType() == STRIPED ? p2Text += "Striped " : p2Text += "Solid ";
+			m_player1->GetOwnedBallType() == BallType::STRIPED ? p1Text += "Striped " : p1Text += "Solid ";
+			m_player2->GetOwnedBallType() == BallType::STRIPED ? p2Text += "Striped " : p2Text += "Solid ";
 
 			p1Text += std::to_string(m_player1->GetBallsSunk());
 			p2Text += std::to_string(m_player2->GetBallsSunk());
@@ -522,7 +559,7 @@ void Application2D::draw() {
 
 	// done drawing sprites
 	m_2dRenderer->end();
-	aie::Gizmos::draw2D(glm::ortho<float>(-m_extents, m_extents, -m_extents / m_aspectRatio, m_extents / m_aspectRatio, -1.f, 1.f));
+	//aie::Gizmos::draw2D(glm::ortho<float>(-m_extents, m_extents, -m_extents / m_aspectRatio, m_extents / m_aspectRatio, -1.f, 1.f));
 
 
 }

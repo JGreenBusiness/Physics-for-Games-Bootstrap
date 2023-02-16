@@ -2,7 +2,7 @@
 
 Player::Player()
 {
-	m_ownedBallType = UNOWNED;
+	m_ownedBallType = BallType::UNOWNED;
 	m_ballsSunk = 0;
 	m_opponent = nullptr;
 }
@@ -18,13 +18,13 @@ void Player::SetOwnedBallType(BallType _ballType)
 
 	 if (!m_opponent->OwnsBallType())
 	 {
-		 if (_ballType == SOLID)
+		 if (_ballType == BallType::SOLID)
 		 {
-			 m_opponent->SetOwnedBallType(STRIPED);
+			 m_opponent->SetOwnedBallType(BallType::STRIPED);
 		 }
 		 else
 		 {
-			 m_opponent->SetOwnedBallType(SOLID);
+			 m_opponent->SetOwnedBallType(BallType::SOLID);
 		 }
 	 }
 

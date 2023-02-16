@@ -9,7 +9,7 @@ public:
 	// Getters
 	int GetBallsSunk() { return m_ballsSunk; }
 	BallType GetOwnedBallType() { return m_ownedBallType; }
-	bool OwnsBallType() { return m_ownedBallType != UNOWNED; }
+	bool OwnsBallType() { return m_ownedBallType != BallType::UNOWNED; }
 	Player* GetOpponent() { return m_opponent; }
 
 	// Setters
@@ -20,7 +20,7 @@ public:
 
 protected:
 	int m_ballsSunk = 0;
-	BallType m_ownedBallType = UNOWNED;
+	BallType m_ownedBallType = BallType::UNOWNED;
 	Player* m_opponent;
 
 

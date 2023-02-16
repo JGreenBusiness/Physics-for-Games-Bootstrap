@@ -12,7 +12,7 @@
 #include "Input.h"
 
 
-enum GamePhase
+enum class GamePhase
 {
 	START,
 	PLAY,
@@ -35,9 +35,11 @@ public:
 protected:
 	void ShootBall(aie::Input* _input, glm::vec2 _mousWorldPos);
 	void PlaceCueBall(glm::vec2 _extents, glm::vec2 _mousWorldPos, float _xOrigin);
+	void CallFoul();
 	float ExponentialEaseIn(float _time, float _start, float _end);
 	glm::vec2 ScreenToWorld(glm::vec2 _screenPos);
 	glm::vec2 WorldToScreen(glm::vec2 _screenPos);
+	
 
 
 	aie::Renderer2D*	m_2dRenderer;
@@ -66,6 +68,7 @@ protected:
 	Player* m_player2;
 	Player* m_currentPlayer;
 	bool m_ballHit;
+	bool m_ballsStill;
 	bool m_switchPlayer;
 	GamePhase m_gamePhase;
 

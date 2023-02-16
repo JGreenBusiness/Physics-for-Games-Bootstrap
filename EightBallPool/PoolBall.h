@@ -1,7 +1,7 @@
 #pragma once
 #include "Circle.h"
 #include "Texture.h"
-enum BallType
+enum class BallType
 {
 	UNOWNED,
 	CUEBALL,

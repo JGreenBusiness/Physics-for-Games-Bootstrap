@@ -5,26 +5,26 @@ PoolBall::PoolBall(glm::vec2 _position, float _mass, float _radius, int _ballNum
 {
 	m_ballNum = _ballNum;
 	m_texture = nullptr;
-	m_ballType = SOLID;
+	m_ballType = BallType::SOLID;
 	switch (m_ballNum)
 	{
 	case 0:
 		m_colour = glm::vec4(1, .992, .816, 1); // Cream
-		m_ballType = CUEBALL;
+		m_ballType = BallType::CUEBALL;
 		break;
 	case 1:
 		m_colour = glm::vec4(1, 1, 0, 1); //Yeallow
 		break;
 	case 9:
 		m_colour = glm::vec4(1, 1, 0,0); //Yeallow
-		m_ballType = STRIPED;
+		m_ballType = BallType::STRIPED;
 		break;
 	case 2:
 		m_colour = glm::vec4(0, 0, 1, 1); // Blue
 		break;
 	case 10:
 		m_colour = glm::vec4(0, 0, 1, 0); // Blue
-		m_ballType = STRIPED;
+		m_ballType = BallType::STRIPED;
 
 		break;
 	case 3:
@@ -32,7 +32,7 @@ PoolBall::PoolBall(glm::vec2 _position, float _mass, float _radius, int _ballNum
 		break;
 	case 11:
 		m_colour = glm::vec4(1, .4, .4, 0); // Light Red
-		m_ballType = STRIPED;
+		m_ballType = BallType::STRIPED;
 
 		break;
 	case 4:
@@ -40,7 +40,7 @@ PoolBall::PoolBall(glm::vec2 _position, float _mass, float _radius, int _ballNum
 		break;
 	case 12:
 		m_colour = glm::vec4(.627, .125, .941, 0); // Purple
-		m_ballType = STRIPED;
+		m_ballType = BallType::STRIPED;
 
 		break;
 	case 5:
@@ -48,7 +48,7 @@ PoolBall::PoolBall(glm::vec2 _position, float _mass, float _radius, int _ballNum
 		break;
 	case 13:
 		m_colour = glm::vec4(1, .647, 0, 0); // Orange
-		m_ballType = STRIPED;
+		m_ballType = BallType::STRIPED;
 
 		break;
 	case 6:
@@ -56,7 +56,7 @@ PoolBall::PoolBall(glm::vec2 _position, float _mass, float _radius, int _ballNum
 		break;
 	case 14:
 		m_colour = glm::vec4(0, 1, 0, 0); // Green
-		m_ballType = STRIPED;
+		m_ballType = BallType::STRIPED;
 
 		break;
 	case 7:
@@ -64,12 +64,12 @@ PoolBall::PoolBall(glm::vec2 _position, float _mass, float _radius, int _ballNum
 		break;
 	case 15:
 		m_colour = glm::vec4(1, 0, 0, 0); // Red
-		m_ballType = STRIPED;
+		m_ballType = BallType::STRIPED;
 
 		break;
 	case 8:
 		m_colour = glm::vec4(0,0, 0, 1); // Black
-		m_ballType = BLACKBALL;
+		m_ballType = BallType::BLACKBALL;
 		break;
 	default:
 		m_colour = glm::vec4(1, 1, 1, 1); // White
