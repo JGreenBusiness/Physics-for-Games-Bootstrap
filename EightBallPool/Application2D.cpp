@@ -307,7 +307,7 @@ void Application2D::update(float _deltaTime) {
 			
 			if (!m_cueBallPlaced)
 			{
-				PlaceCueBall(glm::vec2(0, m_tableExtents.y), mouseWPos,m_cueBallStartPos.x - m_cueBall->GetRadius()*2);
+				PlaceCueBall(glm::vec2(m_tableExtents.x/6, m_tableExtents.y), mouseWPos,m_cueBallStartPos.x - m_tableExtents.x/6 - (m_cueBall->GetRadius()*2));
 
 				if (input->wasMouseButtonPressed(aie::INPUT_MOUSE_BUTTON_LEFT))
 				{
@@ -448,7 +448,7 @@ void Application2D::OnCueBallCollide(PoolBall* _otherBall)
 	
 	if(!m_ballHit)
 	{
-		if (playerBallType != _otherBall->GetType() && playerBallType != BallType::UNOWNED)
+		if (playerBallType != _otherBall->GetType() && playerBallType != BallType::UNOWNED && m_currentPlayer->GetBallsSunk() != 7)
 		{
 			CallFoul();
 		}
@@ -480,15 +480,15 @@ void Application2D::ShootBall(aie::Input* _input,glm::vec2 _mousWorldPos)
 	}
 }
 
-void Application2D::PlaceCueBall(glm::vec2 _extents, glm::vec2 _mousWorldPos, float _xOrigin)
+void Application2D::PlaceCueBall(glm::vec2 _extents, glm::vec2 _mouseWorldPos, float _xOrigin)
 {
 	//Logic for cue ball placing at start
-	glm::vec2 pos = glm::vec2(_mousWorldPos.x, _mousWorldPos.y);
+	glm::vec2 pos = glm::vec2(_mouseWorldPos.x, _mouseWorldPos.y);
 
 	float top = _extents.y - m_cueBall->GetRadius() * 2;
 	float bot = -_extents.y + m_cueBall->GetRadius() * 2;
-	float sL = _extents.x - m_cueBall->GetRadius() * 2;
-	float sR = -_extents.x + m_cueBall->GetRadius() * 2;
+	float sL = (_extents.x + m_cueBall->GetRadius() * 2) + _xOrigin;
+	float sR = (-_extents.x - m_cueBall->GetRadius() * 2) + _xOrigin;
 
 	// position cant exceed extents
 	pos.y > top ? pos.y = top :
@@ -500,9 +500,6 @@ void Application2D::PlaceCueBall(glm::vec2 _extents, glm::vec2 _mousWorldPos, fl
 		: pos.x = pos.x;
 
 
-	pos.x += _xOrigin;
-
-	bool insideBall = false;
 	for (auto ball : m_balls)
 	{
  		if (ball != m_cueBall) 

@@ -34,7 +34,7 @@ public:
 
 protected:
 	void ShootBall(aie::Input* _input, glm::vec2 _mousWorldPos);
-	void PlaceCueBall(glm::vec2 _extents, glm::vec2 _mousWorldPos, float _xOrigin);
+	void PlaceCueBall(glm::vec2 _extents, glm::vec2 _mouseWorldPos, float _xOrigin);
 	void CallFoul();
 	void OnBallSunk(PoolBall* _sunkBall);
 	void OnCueBallCollide(PoolBall* _otherBall);
