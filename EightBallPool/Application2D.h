@@ -36,6 +36,8 @@ protected:
 	void ShootBall(aie::Input* _input, glm::vec2 _mousWorldPos);
 	void PlaceCueBall(glm::vec2 _extents, glm::vec2 _mousWorldPos, float _xOrigin);
 	void CallFoul();
+	void OnBallSunk(PoolBall* _sunkBall);
+	void OnCueBallCollide(PoolBall* _otherBall);
 	float ExponentialEaseIn(float _time, float _start, float _end);
 	glm::vec2 ScreenToWorld(glm::vec2 _screenPos);
 	glm::vec2 WorldToScreen(glm::vec2 _screenPos);
@@ -53,7 +55,6 @@ protected:
 
 	float m_powerMax;
 	float m_power;
-	bool m_increasePower;
 
 	PoolBall* m_cueBall;
 	glm::vec2 m_cueBallStartPos;
@@ -68,7 +69,7 @@ protected:
 	Player* m_player2;
 	Player* m_currentPlayer;
 	bool m_ballHit;
-	bool m_opponentBallSunk;
+	bool m_ballSunk;
 	bool m_ballsStill;
 	bool m_switchPlayer;
 	GamePhase m_gamePhase;
