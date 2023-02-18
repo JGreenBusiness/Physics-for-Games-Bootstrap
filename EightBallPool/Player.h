@@ -6,10 +6,11 @@ public:
 	Player();
 	~Player();
 
+	bool OwnsBallType() { return m_ownedBallType != BallType::UNOWNED; }
+	
 	// Getters
 	int GetBallsSunk() { return m_ballsSunk; }
 	BallType GetOwnedBallType() { return m_ownedBallType; }
-	bool OwnsBallType() { return m_ownedBallType != BallType::UNOWNED; }
 	Player* GetOpponent() { return m_opponent; }
 
 	// Setters

@@ -33,12 +33,24 @@ public:
 
 
 protected:
-	void ShootBall(aie::Input* _input, glm::vec2 _mousWorldPos);
-	void PlaceCueBall(glm::vec2 _extents, glm::vec2 _mouseWorldPos, float _xOrigin);
+
+	//Helper Functions
+	
+	/// <summary>Waits on player input to push Cue Ball with force determined by distance from mouse to ball.</summary>
+	void PrepareToShootBall(aie::Input* _input, glm::vec2 _mouseWorldPos);
+
+	/// <summary>Sets Cue Ball's position to mouse pos if mouse is within extents.</summary>
+	void PrepareToPlaceCueBall(glm::vec2 _extents, glm::vec2 _mouseWorldPos, float _xOrigin);
+	
+	/// <summary>Sets game phase to Foul and switchPlayer to true.</summary>
 	void CallFoul();
+
+	/// <summary>Logic for sinking all ball types, setting players owned type and switching player if player sinks opponents ball.</summary>
 	void OnBallSunk(PoolBall* _sunkBall);
+
+	/// <summary>Sets ballHit to true and calls a foul if the first ball is not owned by player.</summary>
 	void OnCueBallCollide(PoolBall* _otherBall);
-	float ExponentialEaseIn(float _time, float _start, float _end);
+	
 	glm::vec2 ScreenToWorld(glm::vec2 _screenPos);
 	glm::vec2 WorldToScreen(glm::vec2 _screenPos);
 	
@@ -55,24 +67,29 @@ protected:
 
 	float m_powerMax;
 	float m_power;
+	
+	glm::vec2 m_lineEndPos;
+	glm::vec2 m_tableExtents;
 
-	PoolBall* m_cueBall;
 	glm::vec2 m_cueBallStartPos;
-	bool m_cueBallPlaced;
+	
+	PoolBall* m_cueBall;
 
 	std::list<PoolBall*> m_balls;
-	glm::vec2 m_lineEndPos;
 	
 	aie::Texture* m_tableTexture;
 
 	Player* m_player1;
 	Player* m_player2;
 	Player* m_currentPlayer;
+
+	bool m_gizmosOn;
+	bool m_switchPlayer;
+	bool m_cueBallPlaced;
 	bool m_ballHit;
 	bool m_ballSunk;
 	bool m_ballsStill;
-	bool m_switchPlayer;
+	
 	GamePhase m_gamePhase;
 
-	glm::vec2 m_tableExtents;
 };

@@ -13,10 +13,10 @@ PoolBall::PoolBall(glm::vec2 _position, float _mass, float _radius, int _ballNum
 		m_ballType = BallType::CUEBALL;
 		break;
 	case 1:
-		m_colour = glm::vec4(1, 1, 0, 1); //Yeallow
+		m_colour = glm::vec4(1, 1, 0, 1); //Yellow
 		break;
 	case 9:
-		m_colour = glm::vec4(1, 1, 0,0); //Yeallow
+		m_colour = glm::vec4(1, 1, 0,0); //Yellow
 		m_ballType = BallType::STRIPED;
 		break;
 	case 2:
@@ -75,8 +75,6 @@ PoolBall::PoolBall(glm::vec2 _position, float _mass, float _radius, int _ballNum
 		m_colour = glm::vec4(1, 1, 1, 1); // White
 		break;
 	}
-
-
 }
 
 PoolBall::~PoolBall()
