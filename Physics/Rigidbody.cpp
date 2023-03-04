@@ -190,7 +190,6 @@ glm::vec2 Rigidbody::ToWorldSmoothed(glm::vec2 _localPos)
 
 glm::vec2 Rigidbody::ToWorld(glm::vec2 _localPos)
 {
-	//return _localPos + (m_localX * _localPos.x) + (m_localY * _localPos.y);
 	return m_position;
 }
 

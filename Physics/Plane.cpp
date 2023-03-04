@@ -38,7 +38,6 @@ void Plane::Draw(float _alpha)
 	colourFade.a = 0;
 	glm::vec2 start = centrePoint + (parallel * lineSegmentLength);
 	glm::vec2 end = centrePoint - (parallel * lineSegmentLength);
-	//aie::Gizmos::add2DLine(start, end, colour);
 	aie::Gizmos::add2DTri(start, end, start - m_normal * 10.0f, m_colour, m_colour, colourFade);
 	aie::Gizmos::add2DTri(end, end - m_normal * 10.0f, start - m_normal * 10.0f,m_colour, colourFade, colourFade);
 
