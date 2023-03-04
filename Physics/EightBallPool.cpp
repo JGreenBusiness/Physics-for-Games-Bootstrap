@@ -546,7 +546,7 @@ void EightBallPool::draw() {
 		std::string turnText;
 		m_currentPlayer == m_player1 ? turnText = "Player 1" : turnText = "Player 2";
 		turnText += "'s Turn";
-		m_2dRenderer->drawText(m_font, turnText.c_str(), 0, 16);
+		m_2dRenderer->drawText(m_font, turnText.c_str(),getWindowWidth() / 4.0f , 16);
 
 		std::string p1Text = "Player 1: ";
 		std::string p2Text = "Player 2: ";
