@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="cd82ce78-f049-4564-99da-a20deb70d2f0" name="Changes" comment="" />
+    <list default="true" id="cd82ce78-f049-4564-99da-a20deb70d2f0" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../Physics/EightBallPool.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Physics/EightBallPool.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../EightBallPool/Application2D.h" beforeDir="false" afterPath="$PROJECT_DIR$/../EightBallPool/Application2D.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NetixLib/Rigidbody.h" beforeDir="false" afterPath="$PROJECT_DIR$/../NetixLib/Rigidbody.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Physics/Demos.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Physics/Demos.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Physics/Physics.vcxproj" beforeDir="false" afterPath="$PROJECT_DIR$/../Physics/Physics.vcxproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Physics/Physics.vcxproj.filters" beforeDir="false" afterPath="$PROJECT_DIR$/../Physics/Physics.vcxproj.filters" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Physics/Rigidbody.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Physics/Rigidbody.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Physics/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Physics/main.cpp" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -34,6 +44,7 @@
       <updated>1675127798343</updated>
       <workItem from="1675127803781" duration="5555000" />
       <workItem from="1675639004821" duration="29440000" />
+      <workItem from="1677739407157" duration="833000" />
     </task>
     <servers />
   </component>

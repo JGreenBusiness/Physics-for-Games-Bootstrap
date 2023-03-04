@@ -19,17 +19,17 @@ enum class GamePhase
 	FOUL,
 	OVER
 };
-class Application2D : public aie::Application {
+class Application2D : public aie::Application , public PhysicsScene{
 public:
 
 	Application2D();
 	virtual ~Application2D();
 
-	virtual bool startup();
-	virtual void shutdown();
+	bool startup();
+	void shutdown();
 
-	virtual void update(float deltaTime);
-	virtual void draw();
+	void update(float deltaTime);
+	void draw();
 
 
 protected:

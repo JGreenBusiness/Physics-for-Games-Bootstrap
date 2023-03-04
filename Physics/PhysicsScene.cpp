@@ -1,5 +1,7 @@
 #include "PhysicsScene.h"
 
+#include <iostream>
+
 #include "PhysicsObject.h"
 #include "Circle.h"
 #include "Plane.h"
@@ -27,6 +29,7 @@ PhysicsScene::~PhysicsScene()
 void PhysicsScene::AddActor(PhysicsObject* _actor)
 {
 	m_actors.push_back(_actor);
+	std::cout << m_actors.size() << std::endl;
 }
 
 void PhysicsScene::RemoveActor(PhysicsObject* _actor)

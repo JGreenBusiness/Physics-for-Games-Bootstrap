@@ -47,12 +47,14 @@ public:
 	float GetAngularVelocity() { return m_angularVelocity; }
 	bool IsKinematic() { return m_isKinematic; }
 	bool IsTrigger() {return m_isTrigger;}
-	
+	bool GetActive() const { return m_active; }
+
 	// Setters
 	void SetMass(float _mass) { m_mass = _mass; }
 	void SetPosition(glm::vec2 _pos) { m_position = _pos; }
 	void SetKinematic(bool _state) { m_isKinematic = _state; }
 	void SetIsTrigger(bool _state) {m_isTrigger = _state;}
+	void SetActive(bool _active) { m_active = _active; }
 
 	void CalculateAxes();
 
@@ -87,6 +89,9 @@ protected:
 	bool m_isTrigger;
 	std::list<PhysicsObject*> m_objectsInside;
 	std::list<PhysicsObject*> m_objectsInsideThisFrame;
+
+	bool m_active;
+
 	
 private:
 
